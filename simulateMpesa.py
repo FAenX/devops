@@ -38,7 +38,7 @@ def parseArgs():
     parser = argparse.ArgumentParser(description='Simulate Mpesa Response.')
     parser.add_argument("--success", action='store_true', help="successfull payment.")
     parser.add_argument("--failed", action='store_true', help="Failed payment.")
-    parser.add_argument("checkout-id", help="Mpesa checkout request ID.")
+    parser.add_argument("checkout", help="Mpesa checkout request ID.")
     parser.add_argument("url", help="callback url.")
     args = parser.parse_args()
     return args
@@ -50,13 +50,13 @@ if __name__ == '__main__':
   args = parseArgs()
 
   if args.success:
-    s = acceptedResponse.safe_substitute(CheckoutRequestID='idjfhdhfjdf')
+    s = acceptedResponse.safe_substitute(CheckoutRequestID=args.checkout)
     s = ast.literal_eval(s)
     result = accept(s, args.url)
     print(result)
   
   elif args.failed:
-    s = cancelledResponse.safe_substitute(CheckoutRequestID='idjfhdhfjdf')
+    s = cancelledResponse.safe_substitute(CheckoutRequestID=args.checkout)
     s = ast.literal_eval(s)
     result = reject(s, args.url)
     print(result)

@@ -2,6 +2,7 @@ import argparse # argument parser
 import requests
 import json
 from templates import acceptedResponse, cancelledResponse
+import ast 
 
 
 headers = {             
@@ -10,7 +11,7 @@ headers = {
 }
  
 
-def accept(response):
+def accept(response, url):
   response = requests.post(
     url, 
     data=json.dumps(response), 
@@ -20,7 +21,7 @@ def accept(response):
   return response.json()
 
 # find currency in csv file
-def reject(s):
+def reject(s, url):
     # Copy csv to a local file
   response = requests.post(
     url, 
@@ -34,31 +35,31 @@ def reject(s):
 # terminal argument parser
 def parseArgs():
     # create a parser
-    parser = argparse.ArgumentParser(description='Simulate Mpesas.')
-    parser.add_argument("accept", help="accept payment.")
+    parser = argparse.ArgumentParser(description='Simulate Mpesa Response.')
+    parser.add_argument("--success", action='store_true', help="successfull payment.")
+    parser.add_argument("--failed", action='store_true', help="Failed payment.")
+    parser.add_argument("checkout-id", help="Mpesa checkout request ID.")
+    parser.add_argument("url", help="callback url.")
     args = parser.parse_args()
     return args
 
 
 # run code
 if __name__ == '__main__':  
-
-  #  mpesa callback url
-  url ="https://api.yourmedicare.online/mpesa-callback"
  
   args = parseArgs()
 
-  if args.accept:
+  if args.success:
     s = acceptedResponse.safe_substitute(CheckoutRequestID='idjfhdhfjdf')
-    print(s)
-    # result = accept(s)
-    # print(result)
+    s = ast.literal_eval(s)
+    result = accept(s, args.url)
+    print(result)
   
-  # if args.cancell:
-  #   print(s)
-  #   s = cancelledResponse.safe_substitute(CheckoutRequestID='idjfhdhfjdf')
-  #   # result = reject(s)
-  #   # print(result)
+  elif args.failed:
+    s = cancelledResponse.safe_substitute(CheckoutRequestID='idjfhdhfjdf')
+    s = ast.literal_eval(s)
+    result = reject(s, args.url)
+    print(result)
       
   else: 
       print('expecting arguments. use -h flag for help')

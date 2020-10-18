@@ -1,12 +1,5 @@
 #!/bin/bash
 
-# source: https://gist.github.com/francoisromain/e28069c18ebe8f3244f8e4bf2af6b2cb
-# and another script to create the directories deleted by this script
-# project-create.sh: https://gist.github.com/francoisromain/58cabf43c2977e48ef0804848dee46c3
-
-# Call this file with `bash ./project-delete.sh project-name`
-# - project-name is mandatory
-
 # This will delete 4 directories
 # - $GIT: a git repo
 # - $TMP: a temporary directory for deployment

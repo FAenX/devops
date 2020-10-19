@@ -83,12 +83,22 @@ server{
     server_name $server_name;
     client_max_body_size 5M;
 
+    root /srv/www/$site_name/build/;
+    index index.html index.htm;
+
     access_log  /var/log/nginx/$server_name.access.log;
     error_log   /var/log/nginx/$server_name.error.log;
 
-    location /api/ {
-        proxy_pass $proxy_pass/;
+    location / {
+                try_files $uri $uri/ /index.html;
     }
+    error_page 500 502 503 505 /500.html;
+
+    location /api/ {
+        proxy_pass $proxy/;
+    }
+    
+    error_page 500 502 503 505 /500.html;
 }
 
 ''')

@@ -2,7 +2,7 @@ from string import Template
 import argparse
 
 # nginx confs string templates
-from templates import proxy_to_localhost_nginx_conf, static_server_with_proxy_nginx_conf
+from templates import mpesa, nginx
 
 # parse
 # terminal argument parser
@@ -20,12 +20,16 @@ def parseArgs():
 if __name__ == '__main__': 
   args = parseArgs()
   server_name = args.servername
-  port = args.port
-  proxy = args.proxy
+  port = 3000
+  proxy = '127.0.0.1:3000'
+  if args.proxy:
+    proxy = args.proxy
+  if args.port:
+    port = args.port
 
   # static server conf
-  if args.static:
-    s=static_server_with_proxy_nginx_conf.safe_substitute(
+  if args.static:       
+    s=nginx.static_server_with_proxy_nginx_conf.safe_substitute(
       server_name=server_name, 
       proxy=proxy, 
       site_name=server_name
@@ -33,6 +37,9 @@ if __name__ == '__main__':
   
   # proxy server conf
   else:
-    s=proxy_to_localhost_nginx_conf.safe_substitute(server_name=server_name, port=port)
+    s=nginx.proxy_to_localhost_nginx_conf.safe_substitute(
+      server_name=server_name, 
+      port=port
+      )
 
   print(s)

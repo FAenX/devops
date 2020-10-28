@@ -60,7 +60,8 @@ def parseArgs():
     parser.add_argument("--lb4", action='store_true', help="Loopback 4.")
     parser.add_argument("--lb3", action='store_true', help="Loopback 3.")
     parser.add_argument("--react", action='store_true', help="React.")
-    parser.add_argument("name", metavar=('app-name'), help="React.")
+    parser.add_argument("--delete", action='store_true', help="Delete project.")
+    parser.add_argument("name", metavar=('app-name'), help="Project name.")
 
     args = parser.parse_args()
     return args
@@ -156,6 +157,11 @@ if __name__ == '__main__':
             git_dir, content)
 
         print(post_re)
+    
+    # delete project
+    if args.delete:
+        deleted = [os.rmdir(i) for i in directories]
+        print(deleted)
 
 
 

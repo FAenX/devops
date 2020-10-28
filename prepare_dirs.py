@@ -4,6 +4,7 @@ import os
 import sys
 import subprocess
 import argparse
+import shutil
 
 from templates import git_post_recieve
 
@@ -159,9 +160,11 @@ if __name__ == '__main__':
         print(post_re)
     
     # delete project
-    if args.delete:
-        deleted = [os.rmdir(i) for i in directories]
+    if args.delete:        
+        deleted = [shutil.rmtree(i) for i in directories]
         print(deleted)
+       
+        
 
 
 

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import argparse # argument parser
 import requests
 import json

@@ -88,11 +88,14 @@ def parseArgs():
 
 
 # run code
-if __name__ == '__main__':  
+if __name__ == '__main__':
+
+  pp = pprint.PrettyPrinter(width=41, compact=True)  
  
   args = parseArgs()
-  print(args)
-  pp = pprint.PrettyPrinter(width=41, compact=True)
+  # 
+  if len([i for i in args.__dict__.values() if i == True]) < 1:
+    print('use --help to find help')
 
   if args.domains:
     domains = DigitalOceanWrapper().list_domains()['domains']

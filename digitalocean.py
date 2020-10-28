@@ -55,14 +55,14 @@ class DigitalOceanWrapper:
 
         return response.json()
 
-    def add_domain_record(self, domain_name, ip):
+    def add_domain_record(self, domain_name, name, ip, **args):
       response = requests.post(
         self.domain_records_endpoint.safe_substitute(domain_name=domain_name),
         headers=self.pre_headers,        
         data=json.dumps({
             "type": "A",
-            "name": "test",
-            "data": "157.245.253.220",
+            "name": "{}".format(name),
+            "data": '{}'.format(ip),
             "priority": "null",
             "port": "null",
             "ttl": 1800,
@@ -82,7 +82,7 @@ def parseArgs():
     parser.add_argument("--droplets", action='store_true', help="List droplets.")
     parser.add_argument("--domains", action='store_true', help="List domains.")
     parser.add_argument("--domain-records", metavar=('domain.com'), help="domain to show records for")
-    parser.add_argument("--add-domain-record", nargs=2, metavar=('domain.com', 'ip'), help="domain to add records for")
+    parser.add_argument("--add-domain-record", nargs=3, metavar=('domain.com', 'name', '127.0.0.1'), help="domain to add records for")
     args = parser.parse_args()
     return args
 
@@ -110,7 +110,11 @@ if __name__ == '__main__':
     pp.pprint(domain_records)
   
   if args.add_domain_record:
-    records = DigitalOceanWrapper().add_domain_record(args.add_domain_record[0], args.add_domain_record[1])
+    records = DigitalOceanWrapper().add_domain_record(
+      args.add_domain_record[0], 
+      args.add_domain_record[1],
+      args.add_domain_record[2]
+      )
     # domain_records = [i['data'] for i in records]
     pp.pprint(records)
     # print

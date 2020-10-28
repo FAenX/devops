@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 import sys
 import subprocess
@@ -39,9 +41,16 @@ class DirectoryFuncs:
         return process.returncode
 
     def write_post_receive(self, path, post_receive):
-        return post_receive.safe_substitute(
-            WWW=self.DIR_WWW
-        )
+        file_path = '{0}/hooks/post-receive'.format(path)
+        with open(file_path, 'w') as f:
+            f.writelines(post_receive)  
+         
+        #  make it executable
+        command = 'chmod +x {0}'.format(file_path)
+        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+        process.wait()
+
+        return process.returncode
 
 
 # terminal argument parser
@@ -51,6 +60,7 @@ def parseArgs():
     parser.add_argument("--lb4", action='store_true', help="Loopback 4.")
     parser.add_argument("--lb3", action='store_true', help="Loopback 3.")
     parser.add_argument("--react", action='store_true', help="React.")
+    parser.add_argument("name", metavar=('app-name'), help="React.")
 
     args = parser.parse_args()
     return args
@@ -71,7 +81,7 @@ if __name__ == '__main__':
     
 
     # init class
-    directoryFuncs=DirectoryFuncs('test-app')
+    directoryFuncs=DirectoryFuncs(args.name)
 
     # create list of directory paths from app_name
     directories = directoryFuncs.generate_dirs()
@@ -97,18 +107,55 @@ if __name__ == '__main__':
     git_repo = directoryFuncs.init_git_repo(git_dir)
     print(git_repo)
 
-    # create a post recieve hook in the git repo    
+    # create a post recieve hook in the git repo   
+    # for loopback 4 
     if args.lb4:
         content=git_post_recieve.post_recieve_common.safe_substitute(
             WWW=www_dir,
             GIT=git_dir,
-            TMP=tmp_dir
+            TMP=tmp_dir,
+            START_SERVER = git_post_recieve.pm2_dist_index_js.safe_substitute(
+                APP_NAME=args.name
+            )
         )
         print(content)
 
-        # post_re = directoryFuncs.write_post_receive(
-        #     git_dir, )
+        post_re = directoryFuncs.write_post_receive(
+            git_dir, content)
 
-        # print(post_re)
+        print(post_re)
+
+    # create a post recieve hook in the git repo   
+    # for react  
+    if args.lb3:
+        content=git_post_recieve.post_recieve_common.safe_substitute(
+            WWW=www_dir,
+            GIT=git_dir,
+            TMP=tmp_dir,
+            START_SERVER = git_post_recieve.pm2_server_server_js.safe_substitute(
+                APP_NAME=args.name
+            )
+        )
+        print(content)
+
+        post_re = directoryFuncs.write_post_receive(
+            git_dir, content)
+
+        print(post_re)
+
+    if args.react:
+        content=git_post_recieve.post_recieve_common.safe_substitute(
+            WWW=www_dir,
+            GIT=git_dir,
+            TMP=tmp_dir,
+            START_SERVER = git_post_recieve.restart_nginx.safe_substitute()
+        )
+        print(content)
+
+        post_re = directoryFuncs.write_post_receive(
+            git_dir, content)
+
+        print(post_re)
+
 
 

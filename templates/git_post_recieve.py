@@ -24,23 +24,22 @@ post_recieve_common = Template(r'''
     npm run build
 
     #insert lines here for the app version 
-    $post_receive_variable
-
-    # make it executable
-    chmod +x post-receive
+    $START_SERVER
 ''')
 
-post_recieve_lb4 = Template(r'''
+pm2_dist_index_js = Template(r'''
     #stop and start the pm2 app
     pm2 stop $APP_NAME
     pm2 start dist/index.js --name $APP_NAME
-    # make it executable
-    
-
 ''')
 
-post_receive_lb3 = Template(r'''
+pm2_server_server_js = Template(r'''
     #stop and start the pm2 app
     pm2 stop $APP_NAME
     pm2 start server/server.js --name $APP_NAME
+''')
+
+restart_nginx = Template(r'''
+    restart nginx
+    sudo systemctl restart nginx.service
 ''')

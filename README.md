@@ -1,9 +1,9 @@
 # devops
 
-# generate nginx confs 
+#### generate nginx confs 
 
-# create project directories and git repo plus post-receive script to build the application
+#### create project directories and git repo plus post-receive script to build the application
 
-# wrapper for digital ocean
+#### wrapper for digital ocean
 
-# 
+#### 

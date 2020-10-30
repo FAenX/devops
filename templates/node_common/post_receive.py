@@ -1,6 +1,6 @@
 from string import Template
 
-post_recieve_common = Template(r'''
+common = Template(r'''
     # create a post-receive file
     #!/bin/bash
     
@@ -25,21 +25,5 @@ post_recieve_common = Template(r'''
 
     #insert lines here for the app version 
     $START_SERVER
-''')
-
-pm2_dist_index_js = Template(r'''
-    #stop and start the pm2 app
-    pm2 stop $APP_NAME
-    pm2 start dist/index.js --name $APP_NAME
-''')
-
-pm2_server_server_js = Template(r'''
-    #stop and start the pm2 app
-    pm2 stop $APP_NAME
-    pm2 start server/server.js --name $APP_NAME
-''')
-
-restart_nginx = Template(r'''
-    restart nginx
-    sudo systemctl restart nginx.service
+    $DOCKER_BUILD_RUN_LINES
 ''')

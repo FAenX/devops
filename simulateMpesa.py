@@ -3,7 +3,7 @@
 import argparse # argument parser
 import requests
 import json
-from templates import mpesa
+from templates.extra import mpesa_response
 import ast 
 
 
@@ -52,13 +52,13 @@ if __name__ == '__main__':
   args = parseArgs()
 
   if args.success:
-    s = mpesa.acceptedResponse.safe_substitute(CheckoutRequestID=args.checkout)
+    s = mpesa_response.acceptedResponse.safe_substitute(CheckoutRequestID=args.checkout)
     s = ast.literal_eval(s)
     result = accept(s, args.url)
     print(result)
   
   elif args.failed:
-    s = mpesa.cancelledResponse.safe_substitute(CheckoutRequestID=args.checkout)
+    s = mpesa_response.cancelledResponse.safe_substitute(CheckoutRequestID=args.checkout)
     s = ast.literal_eval(s)
     result = reject(s, args.url)
     print(result)

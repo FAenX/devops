@@ -3,7 +3,7 @@ from string import Template
 
 
 # nginx proxy pass to localhost configuration
-proxy_to_localhost_nginx_conf = Template('''
+proxy_to_localhost_nginx_conf = Template(r'''
 
 # server
 server{  
@@ -27,7 +27,7 @@ server{
 ''')
 
 # nginx proxy pass to localhost configuration
-static_server_with_proxy_nginx_conf = Template('''
+static_server_with_proxy_nginx_conf = Template(r'''
 # server
 server{  
     # SSL Configuration

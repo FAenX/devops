@@ -1,7 +1,7 @@
 from string import Template
 
 # A cancelled mpesa request body
-cancelledResponse = Template('''
+cancelledResponse = Template(r'''
 {
   'Body': {
     'stkCallback': {
@@ -15,7 +15,7 @@ cancelledResponse = Template('''
 ''')
 
 # An accepted mpesa request body
-acceptedResponse = Template('''
+acceptedResponse = Template(r'''
 {
   'Body': {
     'stkCallback': {

@@ -6,9 +6,9 @@ import subprocess
 import argparse
 import shutil
 
-from templates.node_common import post_receive
-from templates.pm2 import lb3_git_post_receive, lb4_git_post_recieve
-from templates.nginx import nginx_git_post_receive
+from templates.node_common.post_receive import common
+from templates.nginx.nginx_git_post_receive import restart_nginx
+from templates.nginx.react_post_receive import react
 from templates.docker.docker_post_receive import docker
 
 # project preparation actions
@@ -21,24 +21,29 @@ class Actions:
         self.folders = {'git': '.git', 'www': 'www', 'tmp': 'tmp'}     
 
     def _dir_create(self, path):        
-        command = 'sudo mkdir -p {0}'.format(path)     
+        command = 'mkdir -p {0}'.format(path)     
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
         process.wait()
         if process.returncode == 0:
             return 'created folder {0}'.format(path)
-        return Exception
+        else:
+            error = 'Error code: {}'.format(process.returncode)
+            raise Exception(error)
     
     def _own_directory(self, path):
         user = os.getenv('USER')
-        command = 'sudo chown {0} -R {1}'.format(user, path)     
+        command = 'sudo chown {0} -R {1}'.format(user, os.path.dirname(path))            
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
         process.wait()
+        
         if process.returncode == 0:
-            return 'successfully given ownership to {0} for folder {1}'.format(os.environ['USER'], path)
-        return Exception
+            return 'successfully given ownership to {0} for folder {1}'.format(os.environ['USER'], os.path.dirname(path))
+        else:
+            error = 'Error code: {}'.format(process.returncode)
+            raise ValueError(error)
 
     def _init_git_repo(self, path):
-        command = 'cd {0} & git init --bare --shared=all {0}'.format(path)
+        command = ['cd {0} & git init --bare --shared=all {0}'.format(path)]
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
         process.wait()
         if process.returncode == 0:
@@ -83,23 +88,23 @@ class Actions:
         directories=[
             self._generate_folder_names(folder) for folder in self.folders.values()
             ]
-
+        # give ownership of the directories to current user
+        permisions = [self._own_directory(path) for path in directories]  
+        for i in permisions:     
+            print('message: {}'.format(i))
+            
         # create the directories
         created = [self._dir_create(i) for i in directories]
         for i in created:
             print('message: {}'.format(i))
 
-        # give ownership of the directories to current user
-        permisions = [self._own_directory(i) for i in directories]
-        for i in permisions:
-            print('message: {}'.format(i))
 
     # create post receive file
-    def git_actions(self, framework):
+    def git_actions(self, framework, port=3000):
         # initialize bare repo
         git_folder = self._generate_folder_names(self.folders['git'])
-        www_folder = self._generate_folder_names(self.folders['git'])
-        tmp_folder = self._generate_folder_names(self.folders['git'])
+        www_folder = self._generate_folder_names(self.folders['www'])
+        tmp_folder = self._generate_folder_names(self.folders['tmp'])
 
         init_git_repo = self._init_git_repo(git_folder)
         
@@ -107,16 +112,19 @@ class Actions:
 
         # create a post recieve hook in the git repo   
         # for loopback 4 
-        if framework == 'lb4':
-            content=post_receive.common.safe_substitute(
+        if framework == 'node':
+            content=common.safe_substitute(
                 WWW=www_folder,
                 GIT=git_folder,
                 TMP=tmp_folder,
                 # replace with docker
-                DOCKER_BUILD_RUN_LINES = docker.safe_substitute(
+                DOCKER = docker.safe_substitute(
                     APP_NAME=self.app_name,
-                    GIT_DIR=git_folder
-                )
+                    WWW=www_folder,
+                    PORT=port
+                ),
+                REACT='#',
+                NGINX='#'
             )
             print(content)
 
@@ -125,31 +133,18 @@ class Actions:
 
             print(post_re)
 
-        # create a post recieve hook in the git repo   
-        
-        if framework == 'lb3':
-            content=post_receive.common.safe_substitute(
-                WWW=www_folder,
-                GIT=git_folder,
-                TMP=tmp_folder,
-                START_SERVER =lb3_git_post_receive.pm2.safe_substitute(
-                    APP_NAME=self.app_name
-                )
-            )
-            print(content)
-
-            post_re = self._write_post_receive(
-                git_folder, content)
-
-            print(post_re)
 
         # for react 
         if framework == 'react':
-            content=post_receive.common.safe_substitute(
+            content=common.safe_substitute(
                 WWW=www_folder,
                 GIT=git_folder,
                 TMP=tmp_folder,
-                START_SERVER = nginx_git_post_receive.restart_nginx
+                REACT = react.safe_substitute(
+                    WWW=www_folder,
+                ),
+                NGINX=restart_nginx,
+                DOCKER='#'
             )
             print(content)
 
@@ -159,12 +154,21 @@ class Actions:
             print(post_re)
 
     def delete(self, app_name):
-        directories=[
+        paths=[
             self._generate_folder_names(folder) for folder in self.folders.values()
             ]
-        # delete project           
-        deleted = [shutil.rmtree(i) for i in directories]
-        print(deleted)
+
+        # delete project    
+        
+        commands = ['rm -rf {}'.format(path) for path in paths]
+    
+        for cmd in commands:
+            process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+            process.wait()
+            # print(process.returncode == 0)
+            if process.returncode == 0:
+                print('Successfully deleted {}'.format(cmd))
+           
         
 
 
@@ -172,8 +176,7 @@ class Actions:
 def parseArgs():
     # create a parser
     parser = argparse.ArgumentParser(description='App options.')
-    parser.add_argument("--lb4", action='store_true', help="Loopback 4.")
-    parser.add_argument("--lb3", action='store_true', help="Loopback 3.")
+    parser.add_argument("--node", action='store_true', help="Node JS")
     parser.add_argument("--react", action='store_true', help="React.")
     parser.add_argument("--delete", action='store_true', help="Delete project.")
     parser.add_argument("app_name", metavar=('app-name'), help="Project name.")
@@ -187,8 +190,17 @@ if __name__ == '__main__':
     args = parseArgs()
     # print(args)
     actions = Actions(args.app_name)
-    actions.folder_actions()
-    actions.git_actions('lb4')
+
+    if args.delete:
+        actions.delete(args.app_name)
+    else:
+        actions.folder_actions()
+
+    if args.node:
+        actions.git_actions('node')
+    if args.react:
+        actions.git_actions('react')
+    
 
     
 

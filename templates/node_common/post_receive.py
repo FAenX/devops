@@ -7,23 +7,15 @@ common = Template(r'''
     # Deploy the content to the temporary directory
     git --work-tree=$TMP --git-dir=$GIT checkout -f || exit
     # Do stuffs, like npm install
-    cd $TMP || exit
-
-    npm install
+    $REACT
 
     # Replace the content of the production directory
-    # with the temporary directory
     cd $WWW || exit
-    rm -r .\/*
-
-    cd $TMP || exit
-    mv .\/* $WWW || exit
-
-    #enter the production directory
-    cd $WWW || exit
-    npm run build
+    pwd
+    rm -rf .\/* || exit
+    mv $TMP\/* $WWW || exit
 
     #insert lines here for the app version 
-    $START_SERVER
-    $DOCKER_BUILD_RUN_LINES
+    $NGINX
+    $DOCKER
 ''')

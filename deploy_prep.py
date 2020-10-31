@@ -21,24 +21,29 @@ class Actions:
         self.folders = {'git': '.git', 'www': 'www', 'tmp': 'tmp'}     
 
     def _dir_create(self, path):        
-        command = 'sudo mkdir -p {0}'.format(path)     
+        command = 'mkdir -p {0}'.format(path)     
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
         process.wait()
         if process.returncode == 0:
             return 'created folder {0}'.format(path)
-        return Exception
+        else:
+            error = 'Error code: {}'.format(process.returncode)
+            raise Exception(error)
     
     def _own_directory(self, path):
         user = os.getenv('USER')
-        command = 'sudo chown {0} -R {1}'.format(user, path)     
+        command = 'sudo chown {0} -R {1}'.format(user, os.path.dirname(path))            
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
         process.wait()
+        
         if process.returncode == 0:
-            return 'successfully given ownership to {0} for folder {1}'.format(os.environ['USER'], path)
-        return Exception
+            return 'successfully given ownership to {0} for folder {1}'.format(os.environ['USER'], os.path.dirname(path))
+        else:
+            error = 'Error code: {}'.format(process.returncode)
+            raise ValueError(error)
 
     def _init_git_repo(self, path):
-        command = 'cd {0} & git init --bare --shared=all {0}'.format(path)
+        command = ['cd {0} & git init --bare --shared=all {0}'.format(path)]
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
         process.wait()
         if process.returncode == 0:
@@ -83,19 +88,19 @@ class Actions:
         directories=[
             self._generate_folder_names(folder) for folder in self.folders.values()
             ]
-
+        # give ownership of the directories to current user
+        permisions = [self._own_directory(path) for path in directories]  
+        for i in permisions:     
+            print('message: {}'.format(i))
+            
         # create the directories
         created = [self._dir_create(i) for i in directories]
         for i in created:
             print('message: {}'.format(i))
 
-        # give ownership of the directories to current user
-        permisions = [self._own_directory(i) for i in directories]
-        for i in permisions:
-            print('message: {}'.format(i))
 
     # create post receive file
-    def git_actions(self, framework):
+    def git_actions(self, framework, port=3000):
         # initialize bare repo
         git_folder = self._generate_folder_names(self.folders['git'])
         www_folder = self._generate_folder_names(self.folders['www'])
@@ -115,7 +120,8 @@ class Actions:
                 # replace with docker
                 DOCKER = docker.safe_substitute(
                     APP_NAME=self.app_name,
-                    WWW=www_folder
+                    WWW=www_folder,
+                    PORT=port
                 ),
                 REACT='#',
                 NGINX='#'
@@ -148,20 +154,21 @@ class Actions:
             print(post_re)
 
     def delete(self, app_name):
-        directories=[
+        paths=[
             self._generate_folder_names(folder) for folder in self.folders.values()
             ]
-      
+
         # delete project    
-        for path in directories:
-            command = 'rm -r {}'.format(path)     
-            process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+        
+        commands = ['rm -rf {}'.format(path) for path in paths]
+    
+        for cmd in commands:
+            process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
             process.wait()
+            # print(process.returncode == 0)
             if process.returncode == 0:
-                return 'successfully deleted {}'.format(path)
-            else:
-                print('failed to delete {}'.format(path))
-                continue
+                print('Successfully deleted {}'.format(cmd))
+           
         
 
 
@@ -183,14 +190,17 @@ if __name__ == '__main__':
     args = parseArgs()
     # print(args)
     actions = Actions(args.app_name)
-    
-    actions.folder_actions()
+
+    if args.delete:
+        actions.delete(args.app_name)
+    else:
+        actions.folder_actions()
+
     if args.node:
         actions.git_actions('node')
     if args.react:
         actions.git_actions('react')
-    if args.delete:
-        actions.delete(args.app_name)
+    
 
     
 

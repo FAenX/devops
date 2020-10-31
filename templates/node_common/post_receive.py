@@ -10,8 +10,10 @@ common = Template(r'''
     $REACT
 
     # Replace the content of the production directory
-    rm -r $WWW/* || exit
-    mv $TMP $WWW || exit
+    cd $WWW || exit
+    pwd
+    rm -rf .\/* || exit
+    mv $TMP\/* $WWW || exit
 
     #insert lines here for the app version 
     $NGINX

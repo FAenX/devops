@@ -180,10 +180,9 @@ def parseArgs():
     parser.add_argument("--port",  help="host port")
     parser.add_argument("--react", action='store_true', help="React.")
     parser.add_argument("--delete", action='store_true', help="Delete project.")
-    parser.add_argument("app_name", metavar=('app-name'), help="Project name.")
-
-    args = parser.parse_args()
-    return args
+    parser.add_argument("app_name", metavar=('app_name'), help="Project name.")
+    
+    return parser.parse_args()
 
 
 

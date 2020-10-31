@@ -177,6 +177,7 @@ def parseArgs():
     # create a parser
     parser = argparse.ArgumentParser(description='App options.')
     parser.add_argument("--node", action='store_true', help="Node JS")
+    parser.add_argument("--port",  help="host port")
     parser.add_argument("--react", action='store_true', help="React.")
     parser.add_argument("--delete", action='store_true', help="Delete project.")
     parser.add_argument("app_name", metavar=('app-name'), help="Project name.")
@@ -191,13 +192,17 @@ if __name__ == '__main__':
     # print(args)
     actions = Actions(args.app_name)
 
+    port = 3000
+    if args.port:
+        port = args.port
+
     if args.delete:
         actions.delete(args.app_name)
     else:
         actions.folder_actions()
 
     if args.node:
-        actions.git_actions('node')
+        actions.git_actions('node', port)
     if args.react:
         actions.git_actions('react')
     

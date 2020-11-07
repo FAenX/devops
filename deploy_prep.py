@@ -90,9 +90,9 @@ class Actions:
             self._generate_folder_names(folder) for folder in self.folders.values()
             ]
         # give ownership of the directories to current user
-        permisions = [self._own_directory(path) for path in directories]  
-        for i in permisions:     
-            print('message: {}'.format(i))
+        # permisions = [self._own_directory(path) for path in directories]  
+        # for i in permisions:     
+        #     print('message: {}'.format(i))
             
         # create the directories
         created = [self._dir_create(i) for i in directories]

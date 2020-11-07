@@ -3,19 +3,19 @@ from string import Template
 
 
 # nginx proxy pass to localhost configuration
-proxy_to_localhost_nginx_conf = Template(r'''
+proxy_conf = Template(r'''
 
 # server
 server{  
     # SSL Configuration
-    server_name $server_name;
+    server_name $SERVER_NAME;
     client_max_body_size 5M;
 
-    access_log  /var/log/nginx/$server_name.access.log;
-    error_log   /var/log/nginx/$server_name.error.log;
+    access_log  /var/log/nginx/$SERVER_NAME.access.log;
+    error_log   /var/log/nginx/$SERVER_NAME.error.log;
 
     location / {
-        proxy_pass http://127.0.0.1:$port/;
+        proxy_pass http://127.0.0.1:$PORT/;
         proxy_read_timeout 1800;
         proxy_connect_timeout 1800;
         proxy_set_header        Host $host;
@@ -27,18 +27,18 @@ server{
 ''')
 
 # nginx proxy pass to localhost configuration
-static_server_with_proxy_nginx_conf = Template(r'''
+react_conf = Template(r'''
 # server
 server{  
     # SSL Configuration
-    server_name $server_name;
+    server_name $SERVER_NAME;
     client_max_body_size 5M;
 
-    root /srv/www/$site_name/build/;
+    root /srv/www/$SITE_NAME/build/;
     index index.html index.htm;
 
-    access_log  /var/log/nginx/$server_name.access.log;
-    error_log   /var/log/nginx/$server_name.error.log;
+    access_log  /var/log/nginx/$SERVER_NAME.access.log;
+    error_log   /var/log/nginx/$SERVER_NAME.error.log;
 
     location / {
                 try_files $uri $uri/ /index.html;
@@ -46,12 +46,61 @@ server{
     error_page 500 502 503 505 /500.html;
 
     location /api/ {
-        proxy_pass $proxy/;
+        proxy_pass $PROXY/;
     }
     
     error_page 500 502 503 505 /500.html;
 }
 
 ''')
+
+# nginx proxy pass to localhost configuration
+jekyll_conf = Template(r'''
+# server
+server{  
+    # SSL Configuration
+    server_name $SERVER_NAME;
+    client_max_body_size 5M;
+
+    root /srv/www/$SITE_NAME/build/;
+    index index.html index.htm;
+
+    access_log  /var/log/nginx/$SERVER_NAME.access.log;
+    error_log   /var/log/nginx/$SERVER_NAME.error.log;
+
+    location / {
+                try_files $uri $uri/ /index.html;
+    }
+    error_page 500 502 503 505 /500.html;
+    
+    error_page 500 502 503 505 /500.html;
+}
+
+''')
+
+# nginx proxy pass to localhost configuration
+static_conf = Template(r'''
+# server
+server{  
+    # SSL Configuration
+    server_name $SERVER_NAME;
+    client_max_body_size 5M;
+
+    root /srv/www/$SITE_NAME/;
+    index index.html index.htm;
+
+    access_log  /var/log/nginx/$SERVER_NAME.access.log;
+    error_log   /var/log/nginx/$SERVER_NAME.error.log;
+
+    location / {
+                try_files $uri $uri/ /index.html;
+    }
+    error_page 500 502 503 505 /500.html;
+    
+    error_page 500 502 503 505 /500.html;
+}
+
+''')
+
 
 

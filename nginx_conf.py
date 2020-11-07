@@ -10,39 +10,67 @@ from templates.nginx import nginx_confs
 def parseArgs():
     # create a parser
     parser = argparse.ArgumentParser(description='generate nginx conf.')
-    parser.add_argument("--static", action='store_true', help="static server with proxy_pass.")
-    parser.add_argument("--proxy-to-local", action='store_true', help="proxy server to localhost.")
-    parser.add_argument("servername", help="server_name.")
+    parser.add_argument("--react", action='store_true', help="react with proxy_pass.")
+    parser.add_argument("--proxy-conf", action='store_true', help="PROXYserver.")
+    parser.add_argument("--jekyll", action='store_true', help="Jekyll")
+    parser.add_argument("--static", action='store_true', help="static files.")
+
+    parser.add_argument("servername", help="SERVER_NAME.")
     parser.add_argument("--proxy", help="proxy_pass usr")
-    parser.add_argument("--port", help="port for app running on local host for proxy server")
+    parser.add_argument("--port", help="PORTfor app running on local host for PROXYserver")
     args = parser.parse_args()
     return args
 
 
 if __name__ == '__main__': 
+
   args = parseArgs()
-  server_name = args.servername
-  port = 3000
-  proxy = '127.0.0.1:3000'
+  SERVER_NAME = args.servername
+  port=3000
+  proxy= '127.0.0.1:3000'
+
+  SITE_NAME=SERVER_NAME.split('.')[0]
+
   if args.proxy:
-    proxy = args.proxy
+    PROXY= args.proxy
   if args.port:
-    port = args.port
+    PORT=args.port
 
   # static server conf
-  if args.static:       
-    s=nginx_confs.static_server_with_proxy_nginx_conf.safe_substitute(
-      server_name=server_name, 
-      proxy=proxy, 
-      site_name=server_name
+  if args.react:       
+    s=nginx_confs.react_conf.safe_substitute(
+      SERVER_NAME=SERVER_NAME, 
+      PROXY=proxy, 
+      SITE_NAME=SITE_NAME
       )
     print(s)
   
-  # proxy server conf
-  if args.proxy_to_local:
-    s=nginx_confs.proxy_to_localhost_nginx_conf.safe_substitute(
-      server_name=server_name, 
-      port=port
+  # PROXYserver conf
+  if args.proxy_conf:
+    s=nginx_confs.proxy_conf.safe_substitute(
+      SERVER_NAME=SERVER_NAME, 
+      PORT=port
+      )
+
+    print(s)
+
+   # static server conf
+  if args.static:
+    
+    s=nginx_confs.static_conf.safe_substitute(
+      SERVER_NAME=SERVER_NAME, 
+      SITE_NAME=SITE_NAME,
+      PORT=port
+      )
+
+    print(s)
+
+    # static server conf
+  if args.jekyll:
+    s=nginx_confs.jekyll_conf.safe_substitute(
+      SERVER_NAME=SERVER_NAME, 
+      SITE_NAME=SITE_NAME,
+      PORT=port
       )
 
     print(s)

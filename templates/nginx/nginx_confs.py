@@ -1,6 +1,10 @@
 from string import Template
 
 
+# common
+listen = r'''
+    listen 443;
+'''
 
 # nginx proxy pass to localhost configuration
 proxy_conf = Template(r'''
@@ -10,6 +14,7 @@ server{
     # SSL Configuration
     server_name $SERVER_NAME;
     client_max_body_size 5M;
+    listen
 
     access_log  /var/log/nginx/$SERVER_NAME.access.log;
     error_log   /var/log/nginx/$SERVER_NAME.error.log;
@@ -33,6 +38,7 @@ server{
     # SSL Configuration
     server_name $SERVER_NAME;
     client_max_body_size 5M;
+    listen
 
     root /srv/www/$SITE_NAME/build/;
     index index.html index.htm;
@@ -61,6 +67,7 @@ server{
     # SSL Configuration
     server_name $SERVER_NAME;
     client_max_body_size 5M;
+    listen
 
     root /srv/www/$SITE_NAME/build/;
     index index.html index.htm;
@@ -85,6 +92,7 @@ server{
     # SSL Configuration
     server_name $SERVER_NAME;
     client_max_body_size 5M;
+    listen
 
     root /srv/www/$SITE_NAME/;
     index index.html index.htm;

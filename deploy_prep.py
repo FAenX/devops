@@ -163,6 +163,7 @@ class Actions:
                 JEKYLL = jekyll.safe_substitute(
                     WWW=www_folder,
                 ),
+                REACT = '#',
                 NGINX=restart_nginx,
                 DOCKER='#'
             )

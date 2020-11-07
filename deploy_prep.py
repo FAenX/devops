@@ -32,7 +32,8 @@ class Actions:
     
     def _own_directory(self, path):
         user = os.getenv('USER')
-        command = 'sudo chown {0} -R {1}'.format(user, os.path.dirname(path))            
+        # command = 'sudo chown {0} -R {1}'.format(user, os.path.dirname(path))      
+        command = 'ls -al{}'.format(os.path.dirname(path))            
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
         process.wait()
         

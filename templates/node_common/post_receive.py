@@ -15,6 +15,7 @@ common = Template(r'''
 
      # Do stuffs, like npm install
     $REACT
+    $JEKYLL
 
     #insert lines here for the app version 
     $NGINX

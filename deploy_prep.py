@@ -224,7 +224,7 @@ if __name__ == '__main__':
         actions.folder_actions()
 
     if args.docker:
-        actions.git_actions('node', port)
+        actions.git_actions('docker', port)
     if args.react:
         actions.git_actions('react')
     if args.jekyll:

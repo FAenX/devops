@@ -8,7 +8,7 @@ import shutil
 
 from templates.node_common.post_receive import common
 from templates.nginx.nginx_git_post_receive import restart_nginx
-from templates.nginx.react_post_receive import react
+from templates.nginx.static_post_receive import react, jekyll
 from templates.docker.docker_post_receive import docker
 
 # project preparation actions
@@ -30,17 +30,18 @@ class Actions:
             error = 'Error code: {}'.format(process.returncode)
             raise Exception(error)
     
-    def _own_directory(self, path):
-        user = os.getenv('USER')
-        command = 'sudo chown {0} -R {1}'.format(user, os.path.dirname(path))            
-        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
-        process.wait()
+    # def _own_directory(self, path):
+    #     user = os.getenv('USER')
+    #     # command = 'sudo chown {0} -R {1}'.format(user, os.path.dirname(path))      
+    #     command = 'ls -al {}'.format(os.path.dirname(path))            
+    #     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+    #     process.wait()
         
-        if process.returncode == 0:
-            return 'successfully given ownership to {0} for folder {1}'.format(os.environ['USER'], os.path.dirname(path))
-        else:
-            error = 'Error code: {}'.format(process.returncode)
-            raise ValueError(error)
+    #     if process.returncode == 0:
+    #         return 'successfully given ownership to {0} for folder {1}'.format(os.environ['USER'], os.path.dirname(path))
+    #     else:
+    #         error = 'Error code: {}'.format(process.returncode)
+    #         raise ValueError(error)
 
     def _init_git_repo(self, path):
         command = ['cd {0} & git init --bare --shared=all {0}'.format(path)]
@@ -89,9 +90,9 @@ class Actions:
             self._generate_folder_names(folder) for folder in self.folders.values()
             ]
         # give ownership of the directories to current user
-        permisions = [self._own_directory(path) for path in directories]  
-        for i in permisions:     
-            print('message: {}'.format(i))
+        # permisions = [self._own_directory(path) for path in directories]  
+        # for i in permisions:     
+        #     print('message: {}'.format(i))
             
         # create the directories
         created = [self._dir_create(i) for i in directories]
@@ -112,7 +113,7 @@ class Actions:
 
         # create a post recieve hook in the git repo   
         # for loopback 4 
-        if framework == 'node':
+        if framework == 'docker':
             content=common.safe_substitute(
                 WWW=www_folder,
                 GIT=git_folder,
@@ -153,6 +154,26 @@ class Actions:
 
             print(post_re)
 
+        # for jekyll
+        if framework == 'jekyll':
+            content=common.safe_substitute(
+                WWW=www_folder,
+                GIT=git_folder,
+                TMP=tmp_folder,
+                JEKYLL = jekyll.safe_substitute(
+                    WWW=www_folder,
+                ),
+                REACT = '#',
+                NGINX=restart_nginx,
+                DOCKER='#'
+            )
+            print(content)
+
+            post_re = self._write_post_receive(
+                git_folder, content)
+
+            print(post_re)
+
     def delete(self, app_name):
         paths=[
             self._generate_folder_names(folder) for folder in self.folders.values()
@@ -176,9 +197,11 @@ class Actions:
 def parseArgs():
     # create a parser
     parser = argparse.ArgumentParser(description='App options.')
-    parser.add_argument("--node", action='store_true', help="Node JS")
-    parser.add_argument("--port",  help="host port")
+    parser.add_argument("--docker", action='store_true', help="docker")
     parser.add_argument("--react", action='store_true', help="React.")
+    parser.add_argument("--jekyll", action='store_true', help="Jekyll.")
+    parser.add_argument("--port",  help="host port")
+    
     parser.add_argument("--delete", action='store_true', help="Delete project.")
     parser.add_argument("app_name", metavar=('app_name'), help="Project name.")
     
@@ -200,10 +223,12 @@ if __name__ == '__main__':
     else:
         actions.folder_actions()
 
-    if args.node:
-        actions.git_actions('node', port)
+    if args.docker:
+        actions.git_actions('docker', port)
     if args.react:
         actions.git_actions('react')
+    if args.jekyll:
+        actions.git_actions('jekyll')
     
 
     

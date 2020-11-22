@@ -36,7 +36,7 @@ server{
     client_max_body_size 5M;
     
 
-    root /srv/www/$SITE_NAME/build/;
+    root $DIRECTORY;
     index index.html index.htm;
 
     access_log  /var/log/nginx/$SERVER_NAME.access.log;
@@ -65,7 +65,7 @@ server{
     client_max_body_size 5M;
    
 
-    root /srv/www/$SITE_NAME/build/;
+    root $DIRECTORY;
     index index.html index.htm;
 
     access_log  /var/log/nginx/$SERVER_NAME.access.log;
@@ -89,7 +89,7 @@ server{
     server_name $SERVER_NAME;
     client_max_body_size 5M;
     
-    root /srv/www/$SITE_NAME/;
+    root $DIRECTORY;
     index index.html index.htm;
 
     access_log  /var/log/nginx/$SERVER_NAME.access.log;
@@ -104,6 +104,10 @@ server{
 }
 
 ''')
+
+dir_react=Template(r'''/srv/www/$SITE_NAME/build/''')
+dir_jekyll=Template(r'''/srv/www/$SITE_NAME/_site/''')
+dir_static=Template(r'''/srv/www/$SITE_NAME/''')
 
 
 

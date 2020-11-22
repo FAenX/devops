@@ -10,6 +10,7 @@ react = Template(r'''
 jekyll = Template(r'''
 #stop and start the pm2 app
     cd $WWW || exit
+    bundle
     jekyll build
 ''')
 

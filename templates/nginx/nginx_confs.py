@@ -1,13 +1,10 @@
 from string import Template
 
-
-
-
 # nginx proxy pass to localhost configuration
 proxy_conf = Template(r'''
 
 # server
-server{  
+server{
     # SSL Configuration
     server_name $SERVER_NAME;
     client_max_body_size 5M;
@@ -30,11 +27,11 @@ server{
 # nginx proxy pass to localhost configuration
 react_conf = Template(r'''
 # server
-server{  
+server{
     # SSL Configuration
     server_name $SERVER_NAME;
     client_max_body_size 5M;
-    
+
 
     root $DIRECTORY;
     index index.html index.htm;
@@ -48,9 +45,9 @@ server{
     error_page 500 502 503 505 /500.html;
 
     location /api/ {
-        proxy_pass $PROXY/;
+        proxy_pass https://$PROXY/;
     }
-    
+
     error_page 500 502 503 505 /500.html;
 }
 
@@ -59,11 +56,11 @@ server{
 # nginx proxy pass to localhost configuration
 jekyll_conf = Template(r'''
 # server
-server{  
+server{
     # SSL Configuration
     server_name $SERVER_NAME;
     client_max_body_size 5M;
-   
+
 
     root $DIRECTORY;
     index index.html index.htm;
@@ -75,7 +72,7 @@ server{
                 try_files $uri $uri/ /index.html;
     }
     error_page 500 502 503 505 /500.html;
-    
+
     error_page 500 502 503 505 /500.html;
 }
 
@@ -84,11 +81,11 @@ server{
 # nginx proxy pass to localhost configuration
 static_conf = Template(r'''
 # server
-server{  
+server{
     # SSL Configuration
     server_name $SERVER_NAME;
     client_max_body_size 5M;
-    
+
     root $DIRECTORY;
     index index.html index.htm;
 
@@ -99,7 +96,7 @@ server{
                 try_files $uri $uri/ /index.html;
     }
     error_page 500 502 503 505 /500.html;
-    
+
     error_page 500 502 503 505 /500.html;
 }
 

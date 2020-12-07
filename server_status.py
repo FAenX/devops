@@ -5,5 +5,5 @@ def server_status(url):
 
 
 if __name__=='__main__':
-    response = server_status('https://google.com').status_code
+    response = server_status('https://boma-api.touchinspiration.net/login').status_code
     print(response)

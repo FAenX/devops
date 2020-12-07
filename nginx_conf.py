@@ -13,6 +13,7 @@ def parseArgs():
     # create a parser
     parser = argparse.ArgumentParser(description='generate nginx conf.')
     parser.add_argument("--react", action='store_true', help="react with proxy_pass.")
+    parser.add_argument("--svelte", action='store_true', help="svelte with proxy_pass.")
     parser.add_argument("--docker", action='store_true', help="PROXY server to docker container.")
     parser.add_argument("--jekyll", action='store_true', help="Jekyll")
     parser.add_argument("--static", action='store_true', help="static files.")
@@ -49,6 +50,19 @@ if __name__ == '__main__':
         )
       )
     print(s)
+
+     # static server conf
+  if args.svelte:
+    s=nginx_confs.react_conf.safe_substitute(
+      SERVER_NAME=SERVER_NAME,
+      PROXY=proxy,
+      SITE_NAME=SITE_NAME,
+      DIRECTORY=nginx_confs.dir_svelte.safe_substitute(
+          SITE_NAME=SITE_NAME
+        )
+      )
+    print(s)
+
 
   # PROXYserver conf
   if args.docker:

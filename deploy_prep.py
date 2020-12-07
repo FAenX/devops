@@ -8,7 +8,7 @@ import shutil
 
 from templates.node_common.post_receive import common
 from templates.nginx.nginx_git_post_receive import restart_nginx
-from templates.nginx.static_post_receive import react, jekyll
+from templates.nginx.static_post_receive import react, jekyll, svelte
 from templates.docker.docker_post_receive import docker
 
 # project preparation actions
@@ -29,19 +29,7 @@ class Actions:
         else:
             error = 'Error code: {}'.format(process.returncode)
             raise Exception(error)
-    
-    # def _own_directory(self, path):
-    #     user = os.getenv('USER')
-    #     # command = 'sudo chown {0} -R {1}'.format(user, os.path.dirname(path))      
-    #     command = 'ls -al {}'.format(os.path.dirname(path))            
-    #     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
-    #     process.wait()
-        
-    #     if process.returncode == 0:
-    #         return 'successfully given ownership to {0} for folder {1}'.format(os.environ['USER'], os.path.dirname(path))
-    #     else:
-    #         error = 'Error code: {}'.format(process.returncode)
-    #         raise ValueError(error)
+
 
     def _init_git_repo(self, path):
         command = ['cd {0} & git init --bare --shared=all {0}'.format(path)]
@@ -125,7 +113,8 @@ class Actions:
                     PORT=port
                 ),
                 REACT='#',
-                NGINX='#'
+                NGINX='#',
+                JEKYLL='#'
             )
             print(content)
 
@@ -145,7 +134,29 @@ class Actions:
                     WWW=www_folder,
                 ),
                 NGINX=restart_nginx,
-                DOCKER='#'
+                DOCKER='#',
+                JEKYLL='#'
+            )
+            print(content)
+
+            post_re = self._write_post_receive(
+                git_folder, content)
+
+            print(post_re)
+
+        
+        # for react 
+        if framework == 'svelte':
+            content=common.safe_substitute(
+                WWW=www_folder,
+                GIT=git_folder,
+                TMP=tmp_folder,
+                REACT = svelte.safe_substitute(
+                    WWW=www_folder,
+                ),
+                NGINX=restart_nginx,
+                DOCKER='#',
+                JEKYLL='#'
             )
             print(content)
 
@@ -165,7 +176,7 @@ class Actions:
                 ),
                 REACT = '#',
                 NGINX=restart_nginx,
-                DOCKER='#'
+                DOCKER='#',
             )
             print(content)
 
@@ -199,6 +210,7 @@ def parseArgs():
     parser = argparse.ArgumentParser(description='App options.')
     parser.add_argument("--docker", action='store_true', help="docker")
     parser.add_argument("--react", action='store_true', help="React.")
+    parser.add_argument("--svelte", action='store_true', help="React.")
     parser.add_argument("--jekyll", action='store_true', help="Jekyll.")
     parser.add_argument("--port",  help="host port")
     
@@ -229,6 +241,8 @@ if __name__ == '__main__':
         actions.git_actions('react')
     if args.jekyll:
         actions.git_actions('jekyll')
+    if args.svelte:
+        actions.git_actions('svelte')
     
 
     

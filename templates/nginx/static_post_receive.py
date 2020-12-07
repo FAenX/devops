@@ -14,5 +14,12 @@ jekyll = Template(r'''
     jekyll build
 ''')
 
+svelte = Template(r'''
+#stop and start the pm2 app
+    cd $WWW || exit
+    npm install
+    npm run export
+''')
+
 
 

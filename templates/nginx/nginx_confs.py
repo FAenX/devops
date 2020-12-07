@@ -105,6 +105,7 @@ server{
 dir_react=Template(r'''/srv/www/$SITE_NAME/build/''')
 dir_jekyll=Template(r'''/srv/www/$SITE_NAME/_site/''')
 dir_static=Template(r'''/srv/www/$SITE_NAME/''')
+dir_svelte=Template(r'''/srv/www/$SITE_NAME/__sapper__/export/''')
 
 
 

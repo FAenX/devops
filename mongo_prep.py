@@ -66,4 +66,3 @@ if __name__ == '__main__':
         print(c1.stdout.read())
         print(c1.returncode)
         sys.exit('creating user')
-

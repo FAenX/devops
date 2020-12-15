@@ -10,7 +10,7 @@ super_user = Template('''
                 pwd: '$PASSWORD', 
                  roles: [
                        
-                        { role: "createUser", db: "admin" } 
+                        { role: 'userAdminAnyDatabase', db: 'admin' } 
                     ]
             });
     ''')
@@ -52,8 +52,6 @@ if __name__ == '__main__':
         
         m1 = '"{}"'.format(app_user.safe_substitute(
             USER=user, PASSWORD=MONGO_PASSWORD, DATABASE=dbname))
-   
-
     
     m1 = 'mongo {} --eval {}'.format(dbname, m1)
     print(m1)

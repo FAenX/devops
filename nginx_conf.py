@@ -41,61 +41,52 @@ if __name__ == '__main__':
 
   # static server conf
   if args.react:
-    s=nginx_confs.react_conf.safe_substitute(
-      SERVER_NAME=SERVER_NAME,
-      PROXY=proxy,
-      SITE_NAME=SITE_NAME,
-      DIRECTORY=nginx_confs.dir_react.safe_substitute(
-          SITE_NAME=SITE_NAME
-        )
+    s=nginx_confs.static_common.safe_substitute(
+        SERVER_NAME=SERVER_NAME,
+        PROXY=proxy,
+        SITE_NAME=SITE_NAME,
+        DIRECTORY=nginx_confs.dir_react.safe_substitute(SITE_NAME=SITE_NAME)
       )
     print(s)
 
      # static server conf
   if args.svelte:
-    s=nginx_confs.react_conf.safe_substitute(
-      SERVER_NAME=SERVER_NAME,
-      PROXY=proxy,
-      SITE_NAME=SITE_NAME,
-      DIRECTORY=nginx_confs.dir_svelte.safe_substitute(
-          SITE_NAME=SITE_NAME
-        )
+    s=nginx_confs.static_common.safe_substitute(
+        SERVER_NAME=SERVER_NAME,
+        PROXY=proxy,
+        SITE_NAME=SITE_NAME,
+        DIRECTORY=nginx_confs.dir_svelte.safe_substitute(SITE_NAME=SITE_NAME)
       )
     print(s)
 
 
   # PROXYserver conf
   if args.docker:
-    s=nginx_confs.proxy_conf.safe_substitute(
-      SERVER_NAME=SERVER_NAME,
-      PORT=port
+    s=nginx_confs.reverse_proxy.safe_substitute(
+        SERVER_NAME=SERVER_NAME,
+        PORT=port
       )
 
     print(s)
 
    # static server conf
   if args.static:
-
-    s=nginx_confs.static_conf.safe_substitute(
-      SERVER_NAME=SERVER_NAME,
-      SITE_NAME=SITE_NAME,
-      PORT=port,
-      DIRECTORY=nginx_confs.dir_static.safe_substitute(
-        SITE_NAME=SITE_NAME
-      )
+    s=nginx_confs.static_common.safe_substitute(
+        SERVER_NAME=SERVER_NAME,
+        SITE_NAME=SITE_NAME,
+        PORT=port,
+        DIRECTORY=nginx_confs.dir_static.safe_substitute(SITE_NAME=SITE_NAME)
       )
 
     print(s)
 
     # static server conf
   if args.jekyll:
-    s=nginx_confs.jekyll_conf.safe_substitute(
-      SERVER_NAME=SERVER_NAME,
-      SITE_NAME=SITE_NAME,
-      PORT=port,
-      DIRECTORY=nginx_confs.dir_jekyll.safe_substitute(
-        SITE_NAME=SITE_NAME
-      )
+    s=nginx_confs.static_common.safe_substitute(
+        SERVER_NAME=SERVER_NAME,
+        SITE_NAME=SITE_NAME,
+        PORT=port,
+        DIRECTORY=nginx_confs.dir_jekyll.safe_substitute(SITE_NAME=SITE_NAME)
       )
 
     print(s)

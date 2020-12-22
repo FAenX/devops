@@ -47,7 +47,7 @@ server{
         proxy_cache_background_update on;
         proxy_cache_lock on;
 
-        proxy_pass https:example.net/;    
+        proxy_pass https://example.net/;    
     }
 
 }

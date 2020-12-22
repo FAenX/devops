@@ -1,113 +1,72 @@
 from string import Template
 
+cache_directive = Template('''
+proxy_cache_path /var/nginx/$SITE_NAME levels=1:2 
+keys_zone=$SITE_NAME:10m max_size=10g inactive=1w use_temp_path=off;
+''')
 
+cache = Template('''
+        proxy_cache $SITE_NAME;
+        proxy_cache_revalidate on;
+        proxy_cache_min_uses 3;
+        proxy_cache_use_stale error timeout updating http_500 http_502
+                              http_503 http_504;
+        proxy_cache_background_update on;
+        proxy_cache_lock on;
+''')
 
-
-# nginx proxy pass to localhost configuration
-proxy_conf = Template(r'''
-
-# server
-server{  
+static_common = Template('''
+$CACHE_DIRECTIVE
+#server
+server{
     # SSL Configuration
     server_name $SERVER_NAME;
-    client_max_body_size 5M;
+    client_max_body_size 50M;
+
+    access_log  /var/log/nginx/$SERVER_NAME.access.log;
+    error_log   /var/log/nginx/$SERVER_NAME.error.log;
+
+    root $DIRECTORY;
+    index index.html index.htm;
+
+    location / {
+        $CACHE
+        try_files $uri $uri/ /index.html;
+    }
+
+    location / {
+        $CACHE
+        proxy_pass https:$PROXY/;    
+    }
+
+}
+''')
+
+# nginx proxy pass to localhost configuration
+reverse_proxy = Template('''
+# server
+server{
+    # SSL Configuration
+    server_name $SERVER_NAME;
+    client_max_body_size 50M;
 
     access_log  /var/log/nginx/$SERVER_NAME.access.log;
     error_log   /var/log/nginx/$SERVER_NAME.error.log;
 
     location / {
         proxy_pass http://127.0.0.1:$PORT/;
-        proxy_read_timeout 1800;
-        proxy_connect_timeout 1800;
-        proxy_set_header        Host $host;
-        proxy_set_header        X-Real-IP $remote_addr;
-        proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header        X-Forwarded-Proto $scheme;
+        
     }
 }
 ''')
 
-# nginx proxy pass to localhost configuration
-react_conf = Template(r'''
-# server
-server{  
-    # SSL Configuration
-    server_name $SERVER_NAME;
-    client_max_body_size 5M;
+
+dir_react=Template('''/srv/www/$SITE_NAME/build/''')
+dir_jekyll=Template('''/srv/www/$SITE_NAME/_site/''')
+dir_static=Template('''/srv/www/$SITE_NAME/''')
+dir_svelte=Template('''/srv/www/$SITE_NAME/__sapper__/export/''')
+
+
+
     
-
-    root $DIRECTORY;
-    index index.html index.htm;
-
-    access_log  /var/log/nginx/$SERVER_NAME.access.log;
-    error_log   /var/log/nginx/$SERVER_NAME.error.log;
-
-    location / {
-                try_files $uri $uri/ /index.html;
-    }
-    error_page 500 502 503 505 /500.html;
-
-    location /api/ {
-        proxy_pass $PROXY/;
-    }
-    
-    error_page 500 502 503 505 /500.html;
-}
-
-''')
-
-# nginx proxy pass to localhost configuration
-jekyll_conf = Template(r'''
-# server
-server{  
-    # SSL Configuration
-    server_name $SERVER_NAME;
-    client_max_body_size 5M;
-   
-
-    root $DIRECTORY;
-    index index.html index.htm;
-
-    access_log  /var/log/nginx/$SERVER_NAME.access.log;
-    error_log   /var/log/nginx/$SERVER_NAME.error.log;
-
-    location / {
-                try_files $uri $uri/ /index.html;
-    }
-    error_page 500 502 503 505 /500.html;
-    
-    error_page 500 502 503 505 /500.html;
-}
-
-''')
-
-# nginx proxy pass to localhost configuration
-static_conf = Template(r'''
-# server
-server{  
-    # SSL Configuration
-    server_name $SERVER_NAME;
-    client_max_body_size 5M;
-    
-    root $DIRECTORY;
-    index index.html index.htm;
-
-    access_log  /var/log/nginx/$SERVER_NAME.access.log;
-    error_log   /var/log/nginx/$SERVER_NAME.error.log;
-
-    location / {
-                try_files $uri $uri/ /index.html;
-    }
-    error_page 500 502 503 505 /500.html;
-    
-    error_page 500 502 503 505 /500.html;
-}
-
-''')
-
-dir_react=Template(r'''/srv/www/$SITE_NAME/build/''')
-dir_jekyll=Template(r'''/srv/www/$SITE_NAME/_site/''')
-dir_static=Template(r'''/srv/www/$SITE_NAME/''')
-
-
 

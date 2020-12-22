@@ -12,12 +12,5 @@ common = Template(r'''
     pwd
     rm -rf .\/* || exit
     mv $TMP\/* $WWW || exit
-
-     # Do stuffs, like npm install
-    $REACT
-    $JEKYLL
-
-    #insert lines here for the app version 
-    $NGINX
-    $DOCKER
+    $PLATFORM
 ''')

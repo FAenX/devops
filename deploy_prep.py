@@ -24,8 +24,8 @@ class Actions:
         if process.returncode == 0:
             return 'created folder {0}'.format(path)
         else:
-            error = 'Error code: {}'.format(process.returncode)
-            raise Exception(error)
+            sys.stderr.write('error creating folder {0}'.format(path))
+            sys.exit(1)
 
 
     def _init_git_repo(self, path):
@@ -34,7 +34,9 @@ class Actions:
         process.wait()
         if process.returncode == 0:
             return 'successfully created git bare repo {0}'.format(path)
-        return Exception
+        else:
+            sys.stderr.write('error creating git repos')
+            sys.exit(1)
 
     def _write_post_receive(self, path, post_receive):
         file_path = '{0}/hooks/post-receive'.format(path)
@@ -48,7 +50,9 @@ class Actions:
 
         if process.returncode == 0:
             return 'successfully writen file {0}'.format(file_path)
-        return Exception
+        else:
+            sys.stderr.write('error writing post receive files')
+            sys.exit(1)
 
     def _generate_folder_names(self, name):
         # create list of directory paths from app_name

@@ -37,7 +37,7 @@ server{
         try_files $uri $uri/ /index.html;
     }
 
-    location / {
+    location /api/ {
         
         proxy_cache example;
         proxy_cache_revalidate on;

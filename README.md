@@ -1,14 +1,15 @@
 # devops
 
 #### generate nginx confs 
+example --react with proxy_pass conf
 
-```sh
+```bash
 python3 nginx_conf.py --react example.com --proxy example.net
 ```
 
 output
 
-```sh
+```bash
 proxy_cache_path /var/nginx/example levels=1:2 
 keys_zone=example:10m max_size=10g inactive=1w use_temp_path=off;
 
@@ -54,5 +55,40 @@ server{
 
 ```
 
-#### create project directories and git repo plus post-receive script to build the application
+#### create project directories git repos and post-receive for various platforms
+example --docker
+
+```bash
+python3 deploy_prep.py --docker --port 4000 app_name
+```
+
+output
+```bash 
+message: created folder /srv/git/app_name.git
+message: created folder /srv/www/app_name
+message: created folder /srv/tmp/app_name
+message: successfully created git bare repo /srv/git/app_name.git
+```
+
+post-receive
+```bash
+    # create a post-receive file
+    #!/bin/bash
+    
+    # Deploy the content to the temporary directory
+    git --work-tree=/srv/tmp/app_name --git-dir=/srv/git/app_name.git checkout -f || exit
+
+    # Replace the content of the production directory
+    cd /srv/www/app_name || exit
+    pwd
+    rm -rf .\/* || exit
+    mv /srv/tmp/app_name\/* /srv/www/app_name || exit
+    
+    docker build --tag app_name:1.0 .
+    docker stop app_name
+    docker rm app_name
+    docker run --publish 4000:3000 --restart always --detach --name app_name app_name:1.0
+
+```
+
 

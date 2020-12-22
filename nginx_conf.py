@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import sys
+import subprocess
 
 import argparse
 from string import Template
@@ -39,9 +41,24 @@ if __name__ == '__main__':
   if args.port:
     port=args.port
 
+  CACHE_DIRECTIVE = nginx_confs.cache_directive.safe_substitute(SITE_NAME=SITE_NAME)
+  CACHE = nginx_confs.cache.safe_substitute(SITE_NAME=SITE_NAME)
+
+  # create cache directory
+  command = 'sudo mkdir -p /var/nginx/{0}'.format(SITE_NAME)
+  process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+  process.wait()
+
+  if process.returncode == 0:
+      print('successfully created folder /var/nginx/{0}'.format(SITE_NAME))
+  else:
+    sys.exit()
+
   # static server conf
   if args.react:
     s=nginx_confs.static_common.safe_substitute(
+        CACHE_DIRECTIVE=CACHE_DIRECTIVE,
+        CACHE=CACHE,
         SERVER_NAME=SERVER_NAME,
         PROXY=proxy,
         SITE_NAME=SITE_NAME,
@@ -52,6 +69,8 @@ if __name__ == '__main__':
      # static server conf
   if args.svelte:
     s=nginx_confs.static_common.safe_substitute(
+        CACHE_DIRECTIVE=CACHE_DIRECTIVE,
+        CACHE=CACHE,
         SERVER_NAME=SERVER_NAME,
         PROXY=proxy,
         SITE_NAME=SITE_NAME,
@@ -63,6 +82,8 @@ if __name__ == '__main__':
   # PROXYserver conf
   if args.docker:
     s=nginx_confs.reverse_proxy.safe_substitute(
+        CACHE_DIRECTIVE=CACHE_DIRECTIVE,
+        CACHE=CACHE,
         SERVER_NAME=SERVER_NAME,
         PORT=port
       )
@@ -72,6 +93,8 @@ if __name__ == '__main__':
    # static server conf
   if args.static:
     s=nginx_confs.static_common.safe_substitute(
+        CACHE_DIRECTIVE=CACHE_DIRECTIVE,
+        CACHE=CACHE,
         SERVER_NAME=SERVER_NAME,
         SITE_NAME=SITE_NAME,
         PORT=port,
@@ -83,6 +106,8 @@ if __name__ == '__main__':
     # static server conf
   if args.jekyll:
     s=nginx_confs.static_common.safe_substitute(
+        CACHE_DIRECTIVE=CACHE_DIRECTIVE,
+        CACHE=CACHE,
         SERVER_NAME=SERVER_NAME,
         SITE_NAME=SITE_NAME,
         PORT=port,

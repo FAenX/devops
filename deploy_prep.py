@@ -6,10 +6,7 @@ import subprocess
 import argparse
 import shutil
 
-from templates.node_common.post_receive import common
-from templates.nginx.nginx_git_post_receive import restart_nginx
-from templates.nginx.static_post_receive import react, jekyll, svelte
-from templates.docker.docker_post_receive import docker
+from templates.git import common_post_receive, various_post_receive
 
 # project preparation actions
 class Actions:
@@ -102,19 +99,15 @@ class Actions:
         # create a post recieve hook in the git repo   
         # for loopback 4 
         if framework == 'docker':
-            content=common.safe_substitute(
+            content=common_post_receive.common.safe_substitute(
                 WWW=www_folder,
                 GIT=git_folder,
                 TMP=tmp_folder,
                 # replace with docker
-                DOCKER = docker.safe_substitute(
+                PLATFORM = various_post_receive.docker.safe_substitute(
                     APP_NAME=self.app_name,
-                    WWW=www_folder,
                     PORT=port
                 ),
-                REACT='#',
-                NGINX='#',
-                JEKYLL='#'
             )
             print(content)
 
@@ -126,16 +119,11 @@ class Actions:
 
         # for react 
         if framework == 'react':
-            content=common.safe_substitute(
+            content=common_post_receive.common.safe_substitute(
                 WWW=www_folder,
                 GIT=git_folder,
                 TMP=tmp_folder,
-                REACT = react.safe_substitute(
-                    WWW=www_folder,
-                ),
-                NGINX=restart_nginx,
-                DOCKER='#',
-                JEKYLL='#'
+                PLATFORM = various_post_receive.react
             )
             print(content)
 
@@ -147,16 +135,11 @@ class Actions:
         
         # for react 
         if framework == 'svelte':
-            content=common.safe_substitute(
+            content=common_post_receive.common.safe_substitute(
                 WWW=www_folder,
                 GIT=git_folder,
                 TMP=tmp_folder,
-                REACT = svelte.safe_substitute(
-                    WWW=www_folder,
-                ),
-                NGINX=restart_nginx,
-                DOCKER='#',
-                JEKYLL='#'
+                REACT = various_post_receive.svelte
             )
             print(content)
 
@@ -167,16 +150,11 @@ class Actions:
 
         # for jekyll
         if framework == 'jekyll':
-            content=common.safe_substitute(
+            content=common_post_receive.common.safe_substitute(
                 WWW=www_folder,
                 GIT=git_folder,
                 TMP=tmp_folder,
-                JEKYLL = jekyll.safe_substitute(
-                    WWW=www_folder,
-                ),
-                REACT = '#',
-                NGINX=restart_nginx,
-                DOCKER='#',
+                JEKYLL = various_post_receive.jekyll
             )
             print(content)
 

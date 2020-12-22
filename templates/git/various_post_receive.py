@@ -1,30 +1,29 @@
 from string import Template
 
-docker = Template(r'''
+docker = Template('''
     docker build --tag $APP_NAME:1.0 .
     docker stop $APP_NAME
     docker rm $APP_NAME
     docker run --publish $PORT:3000 --restart always --detach --name $APP_NAME $APP_NAME:1.0
 ''')
 
-restart_nginx = r'''
+react = '''
+    npm install
+    npm run build
     sudo systemctl restart nginx.service
 '''
 
-react = Template(r'''
-    npm install
-    npm run build
-''')
-
-jekyll = Template(r'''
+jekyll = '''
     bundle
     jekyll build
-''')
+    sudo systemctl restart nginx.service
+'''
 
-svelte = Template(r'''
+svelte = '''
     npm install
     npm run export
-''')
+    sudo systemctl restart nginx.service
+'''
 
 
 

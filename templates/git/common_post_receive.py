@@ -12,11 +12,5 @@ common = Template(r'''
     pwd
     rm -rf .\/* || exit
     mv $TMP\/* $WWW || exit
-
-    # Do platform dependent stuffs    
-    $REACT
-    $JEKYLL
-    $SVELTE
-    $STATIC_FILES
-    $DOCKER
+    $PLATFORM
 ''')

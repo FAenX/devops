@@ -15,7 +15,7 @@ react = '''
 
 jekyll = '''
     bundle
-    jekyll build
+    bundle exec jekyll build
     sudo systemctl restart nginx.service
 '''
 

@@ -143,7 +143,7 @@ class Actions:
                 WWW=www_folder,
                 GIT=git_folder,
                 TMP=tmp_folder,
-                REACT = various_post_receive.svelte
+                PLATFORM = various_post_receive.svelte
             )
             print(content)
 
@@ -158,7 +158,7 @@ class Actions:
                 WWW=www_folder,
                 GIT=git_folder,
                 TMP=tmp_folder,
-                JEKYLL = various_post_receive.jekyll
+                PLATFORM = various_post_receive.jekyll
             )
             print(content)
 

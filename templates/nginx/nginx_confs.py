@@ -34,9 +34,9 @@ server{
         try_files $uri $uri/ /index.html;
     }
 
-    location / {
+    location /api/ {
         $CACHE
-        proxy_pass https:$PROXY/;    
+        proxy_pass https://$PROXY/;    
     }
 
 }

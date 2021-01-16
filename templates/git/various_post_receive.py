@@ -14,6 +14,7 @@ react = '''
 '''
 
 jekyll = '''
+    npm install
     npm run build
     bundle
     bundle exec jekyll build

@@ -5,6 +5,7 @@ import subprocess
 import argparse
 import shutil
 import getpass
+from pymongo import MongoClient
 
 def update():
     command1 = 'apt update' 
@@ -98,6 +99,22 @@ def installMongoDB():
         print('mongoDB installed')
     else:
         sys.exit('error installing mongoDB')
+
+    mongo_host = input('host: ')
+
+    mongo_port = input('port: ')
+
+    password='T72askY8Am3Yt3Q2'
+
+    client = MongoClient("mongodb://{}:{}".format(mongo_host, mongo_port))
+
+    db = client['admin']
+
+    admin = db.command('createUser', 'mongo-admin', pwd=password, roles=['userAdminAnyDatabase'])
+    root = db.command('createUser', 'mongo-root', pwd=password, roles=['root'])
+
+    print(admin)
+    print(root)
 
 
 

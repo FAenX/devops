@@ -16,7 +16,7 @@ def parseArgs():
     parser = argparse.ArgumentParser(description='generate nginx conf.')
     parser.add_argument("--react", action='store_true', help="react with proxy_pass.")
     parser.add_argument("--svelte", action='store_true', help="svelte with proxy_pass.")
-    parser.add_argument("--docker", action='store_true', help="PROXY server to docker container.")
+    parser.add_argument("--docker", action='store_true', help="PROXY server to docker containers.")
     parser.add_argument("--jekyll", action='store_true', help="Jekyll")
     parser.add_argument("--static", action='store_true', help="static files.")
 

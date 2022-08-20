@@ -16,7 +16,6 @@ def install_docker():
 def install_wordpress():
     install_docker()
     with subprocess.Popen('\
-        ls -al && \
         docker-compose -f src/dockerfiles/wordpress.yml up -d\
     ', 
     shell=True, stdout=subprocess.PIPE) as proc:        

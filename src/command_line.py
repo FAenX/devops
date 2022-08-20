@@ -20,14 +20,14 @@ def main():
 
 if __name__ == '__main__':
     from installations import install_wordpress
-    main()
-
+    
     questions = [
-    inquirer.Checkbox('stack', message='Choose stack', choices=['wordpress']),    
+    inquirer.Checkbox('stack', message='Choose stack', choices=['wordpress', 'node', 'react']),    
     ]
 
     answers = inquirer.prompt(questions)
 
+    main()
 
     if 'wordpress' in answers['stack']:
         install_wordpress()

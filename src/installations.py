@@ -3,24 +3,13 @@ import subprocess
 import os
 
 
-
-def install_docker():
-    with subprocess.Popen(f'\
-    apt install -y docker.io\
-    && apt install docker-compose -y \
-    ', 
-    shell=True, stdout=subprocess.PIPE) as proc:        
-        for line in proc.stdout:
-            print(line.decode('utf-8').strip())
-
-def install_wordpress():
-    install_docker()
-    with subprocess.Popen('\
-        docker-compose -f src/dockerfiles/wordpress.yml up -d\
-    ', 
-    shell=True, stdout=subprocess.PIPE) as proc:        
-        for line in proc.stdout:
-            print(line.decode('utf-8').strip())
-
+   
+def setup_wordpress_in_docker():
+    try:
+        subprocess.check_call('docker-compose -f src/dockerfiles/wordpress.yml up -d', shell=True)
+        print('Wordpress is running')
+    except:
+        print('Wordpress is not running')
+        
 
 

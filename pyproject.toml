@@ -9,6 +9,7 @@ python = "^3.8"
 Flask = "^2.2.2"
 inquirer = "^2.10.0"
 pymongo = "^4.2.0"
+PyYAML = "^6.0"
 
 [tool.poetry.dev-dependencies]
 

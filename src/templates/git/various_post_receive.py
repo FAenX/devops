@@ -53,6 +53,8 @@ do
   fi
 done
 
+exec git-update-server-info
+
 cd $APP_DIR
 docker build --tag $APP_NAME:latest .
 docker tag $APP_NAME:latest $DOCKER_REGISTRY/$APP_NAME:latest
@@ -60,7 +62,7 @@ $MINIKUBE_DIR/kubectl apply -f $MANIFEST_PATH
 
 echo "**** Done."
 
-exec git-update-server-info
+
 ''')
 
 

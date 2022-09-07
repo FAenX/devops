@@ -12,12 +12,12 @@ class FlaskProjectMiniKube:
             "apiVersion": "v1",
             "kind": "Pod",
             "metadata": {
-                "name": self.project_name
+                "name": f"{self.project_name.replace('_', '-')}-pod"
             },
             "spec": {
                 "containers": [
                     {
-                        "name": self.project_name,
+                        "name": f"{self.project_name.replace('_', '-')}-pod",
                         "image": f"{self.project_name}:latest",
                         "ports": [
                             {
@@ -34,25 +34,25 @@ class FlaskProjectMiniKube:
             "apiVersion": "apps/v1",
             "kind": "Deployment",
             "metadata": {
-                "name": self.project_name
+                "name": f"{self.project_name.replace('_', '-')}-deployment"
             },
             "spec": {
                 "replicas": 1,
                 "selector": {
                     "matchLabels": {
-                        "app": self.project_name
+                        "app": f"{self.project_name.replace('_', '-')}-deployment"
                     }
                 },
                 "template": {
                     "metadata": {
                         "labels": {
-                            "app": self.project_name
+                            "app": f"{self.project_name.replace('_', '-')}-deployment"
                         }
                     },
                     "spec": {
                         "containers": [
                             {
-                                "name": self.project_name,
+                                "name": f"{self.project_name.replace('_', '-')}-deployment",
                                 "image": f"{self.project_name}:latest",
                                 "ports": [
                                     {
@@ -82,7 +82,7 @@ class FlaskProjectMiniKube:
                     }
                 ],
                 "selector": {
-                    "app": self.project_name
+                    "app": f"{self.project_name.replace('_', '-')}-deployment"
                 }
             }
         }
@@ -96,5 +96,7 @@ class FlaskProjectMiniKube:
         subprocess.check_call(f"mkdir -p {config['projects']}/{self.project_name}", shell=True)
         with open(path, 'w') as f:
             f.write(yaml.dump(self.pod()))
+            f.write('\n---\n')
             f.write(yaml.dump(self.deployment()))
+            f.write('\n---\n')
             f.write(yaml.dump(self.service()))

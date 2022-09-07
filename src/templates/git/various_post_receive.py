@@ -53,11 +53,10 @@ do
   fi
 done
 
-
-# mv $TMP_DIR/* $APP_DIR || exit
-# docker build --tag $APP_NAME:latest .
-# docker tag $APP_NAME:latest $DOCKER_REGISTRY/$APP_NAME:latest
-# $MINIKUBE_DIR/kubectl apply -f $MANIFEST_PATH
+cd $APP_DIR
+docker build --tag $APP_NAME:latest .
+docker tag $APP_NAME:latest $DOCKER_REGISTRY/$APP_NAME:latest
+$MINIKUBE_DIR/kubectl apply -f $MANIFEST_PATH
 
 echo "**** Done."
 

@@ -27,6 +27,9 @@ svelte = '''
     sudo systemctl restart nginx.service
 '''
 
+minikube = Template('''
+    $MINIKUBE_DIR/kubectl apply -f $MANIFEST_PATH
+''')
 
 
 

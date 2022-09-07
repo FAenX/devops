@@ -23,14 +23,21 @@ class FlaskProject:
 
     def __dict__(self):
         return {
-            'name': self.name,
-            'image': self.image,
-            'restart': self.restart,
-            'ports': self.ports,
-            'volumes': self.volumes,
-            'command': self.command,
-            'environment': self.environment
+            "version": "3.7",
+            "services": {
+                self.name: {
+                    "image": self.image,
+                    "restart": self.restart,
+                    "ports": self.ports,
+                    "volumes": self.volumes,
+                    "command": self.command,
+                    "environment": self.environment
+                }
+            }
         }
+        
+
+
     def write_docker_compose_file(self):
         config = config_object()
 

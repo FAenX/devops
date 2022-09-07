@@ -11,6 +11,7 @@ class DevopsConfig:
         self.tmp = f"{self.devops_home}/tmp"
         self.projects = f"{self.devops_home}/projects"
         self.devops_config_file = f"{self.devops_home}/{self.config_file_name}"
+        self.minikube_dir = f"{self.devops_home}/minikube"
 
     def __str__(self):
         return f"Devops config folder: {self.devops_home}"
@@ -20,6 +21,7 @@ class DevopsConfig:
         os.makedirs(self.git, exist_ok=True)
         os.makedirs(self.tmp, exist_ok=True)
         os.makedirs(self.projects, exist_ok=True)
+        os.makedirs(self.minikube_dir, exist_ok=True)
 
     def create_config_file_if_not_exists(self):
         if not os.path.exists(self.devops_config_file):
@@ -39,5 +41,6 @@ class DevopsConfig:
             "devops_config_file": self.devops_config_file,
             "devops_home": self.devops_home,
             "config_file_name": self.config_file_name,
-            "projects": self.projects
+            "projects": self.projects,
+            "minikube_dir": self.minikube_dir
         }

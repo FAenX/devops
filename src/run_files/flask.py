@@ -4,6 +4,36 @@ from utils.config import DevopsConfig
 import subprocess
 from templates.git import common_post_receive, various_post_receive
 from templates.docker_compose.flask import FlaskProject
+from templates.minikube_manifest.flask import FlaskProjectMiniKube
+from utils.config_object import config_object
+
+
+
+def minikube_flask():
+    config = config_object()
+    project_name = input('Enter project name: ')
+    git_dir_path = f"{config['git']}/{project_name}.git"
+    project_path = f"{config['projects']}/{project_name}"
+    minikube_dir = f"{config['minikube_dir']}"
+    subprocess.check_call(f'git init --bare --shared=all {git_dir_path}', shell=True)
+   
+    content=various_post_receive.minikube.safe_substitute(
+        MINIKUBE_DIR=minikube_dir,
+        MANIFEST_PATH=f'{project_path}/{project_name}.yml',
+       
+    )
+    print(content)
+
+    with open(f'{git_dir_path}/hooks/post-receive', 'w') as file:
+        file.write(content)
+
+    subprocess.check_call(f'chmod +x {git_dir_path}/hooks/post-receive', shell=True)
+
+    flask_project = FlaskProjectMiniKube(project_name)
+    flask_project.create_manifest()
+
+    
+    
 
 
 def flask():   

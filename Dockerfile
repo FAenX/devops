@@ -1,13 +1,11 @@
-FROM ubuntu:latest
+FROM python:3.8.13-buster
 
-RUN apt-get update && apt-get install -y curl vim wget software-properties-common ssh net-tools ca-certificates python3 python3-pip
-RUN pip install poetry
-
-RUN update-alternatives --install "/usr/bin/python" "python" "$(which python3)" 1
-
+WORKDIR /app
 COPY . .
 
-RUN pip install flask 
+RUN pip install poetry --cache-dir=.pip; \
+    poetry export -f requirements.txt  -o requirements.txt --without-hashes; \
+    pip install -r requirements.txt --cache-dir=.pip ; 
 
 CMD ["python", "src/app.py"]
 

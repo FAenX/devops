@@ -8,6 +8,7 @@ requirements.txt
 
 # ignore temp folder
 .temp/
+minikube
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

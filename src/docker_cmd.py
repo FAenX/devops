@@ -11,10 +11,15 @@ config = DevopsConfig()
 def install_docker_if_not_exists():
     try:
         subprocess.check_call('docker -v', shell=True)
-        subprocess.check_call('docker-compose -v', shell=True)
     except:
         subprocess.check_call('apt-get install docker.io -y', shell=True)
+
+    try:
+        subprocess.check_call('docker-compose -v', shell=True)
+    except:
         subprocess.check_call('apt-get install docker-compose -y', shell=True)
+
+
 
 
 if __name__ == '__main__':

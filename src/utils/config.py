@@ -12,6 +12,7 @@ class DevopsConfig:
         self.projects = f"{self.devops_home}/projects"
         self.devops_config_file = f"{self.devops_home}/{self.config_file_name}"
         self.minikube_dir = f"{self.devops_home}/minikube"
+        self.docker_registry = "localhost:5000"
 
     def __str__(self):
         return f"Devops config folder: {self.devops_home}"
@@ -42,5 +43,6 @@ class DevopsConfig:
             "devops_home": self.devops_home,
             "config_file_name": self.config_file_name,
             "projects": self.projects,
-            "minikube_dir": self.minikube_dir
+            "minikube_dir": self.minikube_dir,
+            "docker_registry": self.docker_registry
         }

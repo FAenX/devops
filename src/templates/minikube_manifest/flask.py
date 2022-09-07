@@ -6,6 +6,7 @@ import subprocess
 class FlaskProjectMiniKube:
     def __init__(self, project_name):
         self.project_name = project_name
+        self.config = config_object()
 
     def pod(self):
         return {
@@ -18,7 +19,7 @@ class FlaskProjectMiniKube:
                 "containers": [
                     {
                         "name": f"{self.project_name.replace('_', '-')}-pod",
-                        "image": f"{self.project_name}:latest",
+                        "image": f"{self.config['docker_registry']}/devops/{self.project_name}:latest",
                         "ports": [
                             {
                                 "containerPort": 5000
@@ -53,7 +54,7 @@ class FlaskProjectMiniKube:
                         "containers": [
                             {
                                 "name": f"{self.project_name.replace('_', '-')}-deployment",
-                                "image": f"{self.project_name}:latest",
+                                "image": f"{self.config['docker_registry']}/devops/{self.project_name}:latest",
                                 "ports": [
                                     {
                                         "containerPort": 5000

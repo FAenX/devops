@@ -20,6 +20,13 @@ def minikube_flask():
     content=various_post_receive.minikube.safe_substitute(
         MINIKUBE_DIR=minikube_dir,
         MANIFEST_PATH=f'{project_path}/{project_name}.yml',
+        DOCKER_REGISTRY=f'{config["docker_registry"]}',
+        APP_NAME=project_name,
+        GIT_DIR = git_dir_path,
+        APP_DIR = project_path,
+        TMP_DIR = f'{config["tmp"]}/{project_name}'
+
+
        
     )
     print(content)

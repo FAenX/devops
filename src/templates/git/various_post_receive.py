@@ -29,10 +29,10 @@ svelte = '''
 
 minikube = Template('''
 git --work-tree=$TMP_DIR --git-dir=$GIT_DIR checkout -f || exit
-mv $TMP_DIR/* $APP_DIR || exit
-docker build --tag $APP_NAME:latest .
-docker tag $APP_NAME:latest $DOCKER_REGISTRY/$APP_NAME:latest
-$MINIKUBE_DIR/kubectl apply -f $MANIFEST_PATH
+# mv $TMP_DIR/* $APP_DIR || exit
+# docker build --tag $APP_NAME:latest .
+# docker tag $APP_NAME:latest $DOCKER_REGISTRY/$APP_NAME:latest
+# $MINIKUBE_DIR/kubectl apply -f $MANIFEST_PATH
 ''')
 
 

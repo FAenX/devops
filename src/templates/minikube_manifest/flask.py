@@ -13,12 +13,12 @@ class FlaskProjectMiniKube:
             "apiVersion": "v1",
             "kind": "Pod",
             "metadata": {
-                "name": f"{self.project_name.replace('_', '-')}-pod"
+                "name": f"{self.project_name.replace('_', '-')}"
             },
             "spec": {
                 "containers": [
                     {
-                        "name": f"{self.project_name.replace('_', '-')}-pod",
+                        "name": f"{self.project_name.replace('_', '-')}",
                         "image": f"{self.config['docker_registry']}/devops/{self.project_name}:latest",
                         "ports": [
                             {
@@ -35,25 +35,25 @@ class FlaskProjectMiniKube:
             "apiVersion": "apps/v1",
             "kind": "Deployment",
             "metadata": {
-                "name": f"{self.project_name.replace('_', '-')}-deployment"
+                "name": f"{self.project_name.replace('_', '-')}"
             },
             "spec": {
                 "replicas": 1,
                 "selector": {
                     "matchLabels": {
-                        "app": f"{self.project_name.replace('_', '-')}-deployment"
+                        "app": f"{self.project_name.replace('_', '-')}"
                     }
                 },
                 "template": {
                     "metadata": {
                         "labels": {
-                            "app": f"{self.project_name.replace('_', '-')}-deployment"
+                            "app": f"{self.project_name.replace('_', '-')}"
                         }
                     },
                     "spec": {
                         "containers": [
                             {
-                                "name": f"{self.project_name.replace('_', '-')}-deployment",
+                                "name": f"{self.project_name.replace('_', '-')}",
                                 "image": f"{self.config['docker_registry']}/devops/{self.project_name}:latest",
                                 "ports": [
                                     {
@@ -72,7 +72,7 @@ class FlaskProjectMiniKube:
             "apiVersion": "v1",
             "kind": "Service",
             "metadata": {
-                "name": f"{self.project_name.replace('_', '-')}-service"
+                "name": f"{self.project_name.replace('_', '-')}"
             },
             "spec": {
                 "type": "NodePort",
@@ -83,7 +83,7 @@ class FlaskProjectMiniKube:
                     }
                 ],
                 "selector": {
-                    "app": f"{self.project_name.replace('_', '-')}-deployment"
+                    "app": f"{self.project_name.replace('_', '-')}"
                 }
             }
         }

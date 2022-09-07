@@ -43,18 +43,13 @@ do
   echo "**** Received [$branch_received] branch."
  
   # Making sure we received the branch we want.
-  if [ $branch_received = $BRANCH ]; then
-    cd $APP_DIR
-  
+  if [ $branch_received = $BRANCH ]; then  
     # checkout the new version
     echo "**** Checking out branch."
-    GIT_WORK_TREE=$APP_DIR git checkout -f $BRANCH
-    
-    
+    GIT_WORK_TREE=$APP_DIR git checkout -f $BRANCH 
   else
     echo "**** Invalid branch, aborting."
     exit 0
-
   fi
 done
 

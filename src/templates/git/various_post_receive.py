@@ -28,11 +28,45 @@ svelte = '''
 '''
 
 minikube = Template('''
-git --work-tree=$TMP_DIR --git-dir=$GIT_DIR checkout -f || exit
+#!/bin/bash
+
+SITE_NAME=$APP_NAME
+SITE_PATH=$APP_DIR
+BRANCH="master"
+
+echo "**** $SITE_NAME [post-receive] hook received."
+
+while read oldrev newrev ref
+do
+  branch_received=`echo $ref | cut -d/ -f3`
+
+  echo "**** Received [$branch_received] branch."
+ 
+  # Making sure we received the branch we want.
+  if [ $branch_received = $BRANCH ]; then
+    cd $APP_DIR
+  
+    # checkout the new version
+    echo "**** Checking out branch."
+    GIT_WORK_TREE=$APP_DIR git checkout -f $BRANCH
+    
+    
+  else
+    echo "**** Invalid branch, aborting."
+    exit 0
+
+  fi
+done
+
+
 # mv $TMP_DIR/* $APP_DIR || exit
 # docker build --tag $APP_NAME:latest .
 # docker tag $APP_NAME:latest $DOCKER_REGISTRY/$APP_NAME:latest
 # $MINIKUBE_DIR/kubectl apply -f $MANIFEST_PATH
+
+echo "**** Done."
+
+exec git-update-server-info
 ''')
 
 

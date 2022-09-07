@@ -1,5 +1,5 @@
 
-from templates.docker_compose_snippets import WordpressProject
+from templates.docker_compose.wordpress import WordpressProject
 
 def setup_wordpress_in_docker():
     project_name = input('Enter project name: ')

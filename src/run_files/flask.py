@@ -9,9 +9,9 @@ from utils.config_object import config_object
 
 
 
-def minikube_flask():
+def minikube_flask(project_name):
     config = config_object()
-    project_name = input('Enter project name: ')
+    # project_name = input('Enter project name: ')
     git_dir_path = f"{config['git']}/{project_name}.git"
     project_path = f"{config['projects']}/{project_name}"
     minikube_dir = f"{config['minikube_dir']}"

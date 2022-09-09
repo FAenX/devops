@@ -4,8 +4,9 @@ import subprocess
 
 
 class FlaskProjectMiniKube:
-    def __init__(self, project_name):
+    def __init__(self, project_name, tag):
         self.project_name = project_name
+        self.tag = tag
         self.config = config_object()
 
     def pod(self):
@@ -19,7 +20,7 @@ class FlaskProjectMiniKube:
                 "containers": [
                     {
                         "name": f"{self.project_name.replace('_', '-')}",
-                        "image": f"{self.config['docker_registry']}/devops/{self.project_name}:latest",
+                        "image": f"{self.config['docker_registry']}/devops/{self.project_name}:{self.tag}",
                         "ports": [
                             {
                                 "containerPort": 5000
@@ -54,7 +55,7 @@ class FlaskProjectMiniKube:
                         "containers": [
                             {
                                 "name": f"{self.project_name.replace('_', '-')}",
-                                "image": f"{self.config['docker_registry']}/devops/{self.project_name}:latest",
+                                "image": f"{self.config['docker_registry']}/devops/{self.project_name}:{self.tag}",
                                 "ports": [
                                     {
                                         "containerPort": 5000

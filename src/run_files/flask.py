@@ -9,7 +9,7 @@ from utils.config_object import config_object
 
 
 
-def minikube_flask(project_name):
+def minikube_flask(project_name, tag):
     config = config_object()
     # project_name = input('Enter project name: ')
     git_dir_path = f"{config['git']}/{project_name}.git"
@@ -25,6 +25,7 @@ def minikube_flask(project_name):
         GIT_DIR = git_dir_path,
         APP_DIR = project_path,
         TMP_DIR = f'{config["tmp"]}/{project_name}'
+        
 
 
        
@@ -36,7 +37,7 @@ def minikube_flask(project_name):
 
     subprocess.check_call(f'chmod +x {git_dir_path}/hooks/post-receive', shell=True)
 
-    flask_project = FlaskProjectMiniKube(project_name)
+    flask_project = FlaskProjectMiniKube(project_name, tag)
     flask_project.create_manifest()
 
     

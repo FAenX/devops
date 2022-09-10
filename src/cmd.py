@@ -33,6 +33,12 @@ def install_minikube_if_not_exists(minikube_dir):
         subprocess.check_call('apt-get install docker-compose -y', shell=True)
 
 
+    # add minikube to path if not already there
+    if not os.environ['PATH'].find(minikube_dir) > -1:
+        os.environ['PATH'] = os.environ['PATH'] + ':' + minikube_dir
+    
+
+
 if __name__ == '__main__':
     from run_files.applications import minikube_manifest
     from run_files.wordpress import setup_wordpress_in_docker

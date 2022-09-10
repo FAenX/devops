@@ -1,6 +1,6 @@
 from flask import Flask
 server = Flask(__name__)
-from run_files.flask import minikube_flask
+from src.run_files.applications import minikube_flask
 
 @server.route("/")
 def hello():

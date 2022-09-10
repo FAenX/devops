@@ -3,7 +3,7 @@ from utils.config_object import config_object
 import subprocess
 
 
-class FlaskProjectMiniKube:
+class MiniKubeManifest:
     def __init__(self, project_name):
         self.project_name = project_name
         self.config = config_object()

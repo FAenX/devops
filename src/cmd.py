@@ -6,12 +6,11 @@ import yaml
 from utils.config import DevopsConfig
 
 
-config = DevopsConfig()
 
-def install_minikube_if_not_exists():
-    config.create_directories()
-    config.create_config_file_if_not_exists()
-    minikube_dir = config.minikube_dir
+
+def install_minikube_if_not_exists(minikube_dir):
+    
+    
     try:
         subprocess.check_call('docker -v', shell=True)
         
@@ -28,25 +27,39 @@ def install_minikube_if_not_exists():
         subprocess.check_call(f'{minikube_dir}/kubectl version --client', shell=True)
     except:
         subprocess.check_call(f'curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && chmod +x kubectl && mv kubectl {minikube_dir}/', shell=True)
-
+    try:
+        subprocess.check_call('docker-compose -v', shell=True)
+    except:
+        subprocess.check_call('apt-get install docker-compose -y', shell=True)
 
 
 if __name__ == '__main__':
-    from run_files.flask import minikube_flask
+    from run_files.applications import minikube_manifest
+    from run_files.wordpress import setup_wordpress_in_docker
+    from run_files.applications import flask
 
-    install_minikube_if_not_exists()
-    
+
+    config = DevopsConfig()
+    minikube_dir = config.minikube_dir
+
+    install_minikube_if_not_exists(minikube_dir)   
+    config.create_directories()
+    config.create_config_file_if_not_exists()
     
     questions = [
-    inquirer.Checkbox('stack', message='Choose stack', choices=['wordpress', 'node', 'react', 'flask']),    
+    inquirer.Checkbox('stack', message='Choose stack', choices=['wordpress', 'node', 'react', 'flask','kube-deployment']),    
     ]
 
     answers = inquirer.prompt(questions)
 
     if 'wordpress' in answers['stack']:
-        pass
+        setup_wordpress_in_docker()
     if 'flask' in answers['stack']:        
-        minikube_flask()
+        flask()        
+    if 'kube-deployment' in answers['stack']:        
+        minikube_manifest()
+    if 'node' in answers['stack']:        
+        pass
         
 
     

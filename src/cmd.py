@@ -18,7 +18,7 @@ def install_minikube_if_not_exists(minikube_dir):
         subprocess.check_call('apt-get install docker.io -y', shell=True)
 
     try:
-        subprocess.check_call(f'{minikube_dir}/minikube -h > /dev/null', shell=True)
+        subprocess.check_call(f"{minikube_dir}/minikube -h > /dev/null", shell=True)
     except:       
         print('executing minikube install')
         subprocess.check_call(f'curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube-linux-amd64 && mv minikube-linux-amd64 {minikube_dir}/minikube && {minikube_dir}/minikube start', shell=True, cwd=minikube_dir)

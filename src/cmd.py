@@ -41,10 +41,12 @@ if __name__ == '__main__':
 
     config = DevopsConfig()
     minikube_dir = config.minikube_dir
-
-    install_minikube_if_not_exists(minikube_dir)   
     config.create_directories()
     config.create_config_file_if_not_exists()
+
+    install_minikube_if_not_exists(minikube_dir)   
+   
+    
     
     questions = [
     inquirer.Checkbox('stack', message='Choose stack', choices=['wordpress', 'node', 'react', 'flask','kube-deployment']),    

@@ -107,7 +107,7 @@ class DevopsConfig:
 
 
         try:
-            subprocess.check_call(f'{self.minikube_dir}/minikube -h > /dev/null 2>&1', shell=True)
+            subprocess.check_call(f'minikube -h > /dev/null 2>&1', shell=True)
         except Exception as e:     
             # print(e)  
             print('executing minikube install')
@@ -116,7 +116,7 @@ class DevopsConfig:
             subprocess.check_call(f'export PATH={self.minikube_dir}:$PATH', shell=True)
             # 
         try:
-            subprocess.check_call(f'{self.minikube_dir}/kubectl version --client', shell=True)
+            subprocess.check_call(f'kubectl version --client', shell=True)
         except:
             subprocess.check_call(f'curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && chmod +x kubectl && mv kubectl {self.minikube_dir}/', shell=True)
             # add kubectl to path

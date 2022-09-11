@@ -19,13 +19,15 @@ class DevopsConfig:
         self.production = production
         self.create_directories_if_not_exists()
         self.create_config_file_if_not_exists()
-        self.set_digital_ocean_token = digital_ocean_token
+        self.digital_ocean_token = digital_ocean_token
         self.config = self.read_config_file()
+        self.set_digital_ocean_token()
         self.install_minikube_if_not_exists()
 
     def __str__(self):
         return f"Devops config folder: {self.devops_home}"
 
+    
     def create_directories_if_not_exists(self):
         os.makedirs(self.devops_home, exist_ok=True)
         os.makedirs(self.git, exist_ok=True)
@@ -59,7 +61,7 @@ class DevopsConfig:
             ]
             answers = inquirer.prompt(questions)
             self.config['digital_ocean_token'] = answers['token']
-            self.config_instance.update_config_file('digital_ocean_token', answers['token'])
+            self.update_config_file('digital_ocean_token', answers['token'])
 
     # check os distro
     def check_os(self):
@@ -142,7 +144,6 @@ class DevopsConfig:
             "projects": self.projects,
             "minikube_dir": self.minikube_dir,
             "docker_registry": self.docker_registry,
-            "production": self.production,
-            "digital_ocean_token": self.digital_ocean_token
+            "production": self.production
             
         }

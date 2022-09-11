@@ -1,22 +1,38 @@
 #!/usr/bin/python3.8
 import subprocess
 import inquirer
-import os
-import yaml
 from utils.config import DevopsConfig
-import csv
 
 
 
-config_instance = DevopsConfig()
-config = config_instance.config
-minikube_dir = config.get('minikube_dir')
 
 
 if __name__ == '__main__':
     from run_files.applications import minikube_manifest
     from run_files.wordpress import setup_wordpress_in_docker
     from run_files.applications import flask
+    # inqure environment
+    questions = [
+        inquirer.List('environment',
+                    message="Select environment",
+                    choices=['production', 'staging'],
+                    ),
+    ]
+    answers = inquirer.prompt(questions)
+    environment = answers['environment']
+
+    if environment == 'production':
+        production = True
+    else:
+        production = False
+
+    config_instance = DevopsConfig(production=production)
+    print(config_instance.read_config_file())
+    config = config_instance.config
+
+    print(config)
+    minikube_dir = config.get('minikube_dir')
+    
     # update debian
     subprocess.check_call('apt-get update', shell=True)
 

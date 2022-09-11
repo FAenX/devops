@@ -57,8 +57,9 @@ cd $APP_DIR
 docker build --tag $APP_NAME:latest .
 docker image tag $APP_NAME:latest $DOCKER_REGISTRY/devops/$APP_NAME:latest
 docker push $DOCKER_REGISTRY/devops/$APP_NAME:latest
-$MINIKUBE_DIR/kubectl rollout restart -n default deployment $APP_NAME
 $MINIKUBE_DIR/kubectl apply -f $MANIFEST_PATH
+$MINIKUBE_DIR/kubectl rollout restart -n default deployment $APP_NAME
+
 
 echo "**** Done."
 

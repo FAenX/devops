@@ -40,7 +40,7 @@ class WordpressProject():
     
     def __dict__(self):
         return {
-            "version": "3.7",
+            "version": "3.3",
             "services": {
                 self.wordpress.name: {
                     "image": self.wordpress.image,

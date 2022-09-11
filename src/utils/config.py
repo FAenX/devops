@@ -111,7 +111,7 @@ class DevopsConfig:
         except Exception as e:     
             # print(e)  
             print('executing minikube install')
-            subprocess.check_call(f'curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube-linux-amd64 && mv minikube-linux-amd64 {self.minikube_dir}/minikube && {self.minikube_dir}/minikube start', shell=True, cwd=self.minikube_dir)
+            subprocess.check_call(f'curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube-linux-amd64 && mv minikube-linux-amd64 {self.minikube_dir}/minikube && {self.minikube_dir}/minikube start --force', shell=True, cwd=self.minikube_dir)
             # add minikube to path
             subprocess.check_call(f'export PATH={self.minikube_dir}:$PATH', shell=True)
             # 

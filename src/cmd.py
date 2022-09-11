@@ -71,8 +71,9 @@ class Main():
 
 
         try:
-            subprocess.check_call(f'{minikube_dir}/minikube -h > /dev/null', shell=True)
-        except:       
+            subprocess.check_call(f'{minikube_dir}/minikube -h > /dev/null 2>&1', shell=True)
+        except Exception as e:     
+            # print(e)  
             print('executing minikube install')
             subprocess.check_call(f'curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube-linux-amd64 && mv minikube-linux-amd64 {minikube_dir}/minikube && {minikube_dir}/minikube start', shell=True, cwd=minikube_dir)
 

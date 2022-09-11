@@ -10,8 +10,8 @@ import csv
 class Main():
     def __init__(self):
         self.config_instance = DevopsConfig()
-        self.config_instance.create_config_file_if_not_exists()
         self.config_instance.create_directories_if_not_exists()
+        self.config_instance.create_config_file_if_not_exists()
         self.config = self.config_instance.read_config_file()
         self.set_digital_ocean_token()
         self.minikube_dir = self.config.get('minikube_dir')

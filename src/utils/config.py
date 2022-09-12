@@ -115,7 +115,7 @@ class DevopsConfig:
             # add minikube path to bashrc
             subprocess.check_call(f'echo "export PATH=$PATH:{self.minikube_dir}" >> ~/.bashrc', shell=True)
             # source bashrc
-            subprocess.check_call(f'source ~/.bashrc', shell=True)
+            # subprocess.check_call(f'source ~/.bashrc', shell=True)
             # 
         try:
             subprocess.check_call(f'kubectl version --client', shell=True)

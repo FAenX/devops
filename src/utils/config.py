@@ -112,8 +112,10 @@ class DevopsConfig:
             # print(e)  
             print('executing minikube install')
             subprocess.check_call(f'curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube-linux-amd64 && mv minikube-linux-amd64 {self.minikube_dir}/minikube && {self.minikube_dir}/minikube start --force', shell=True, cwd=self.minikube_dir)
-            # add minikube to path
-            subprocess.check_call(f'export PATH={self.minikube_dir}:$PATH', shell=True)
+            # add minikube path to bashrc
+            subprocess.check_call(f'echo "export PATH=$PATH:{self.minikube_dir}" >> ~/.bashrc', shell=True)
+            # source bashrc
+            subprocess.check_call(f'source ~/.bashrc', shell=True)
             # 
         try:
             subprocess.check_call(f'kubectl version --client', shell=True)

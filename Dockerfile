@@ -1,11 +1,13 @@
-FROM python:3.8.13-buster
+FROM ubuntu:latest
 
 WORKDIR /app
 COPY . .
 
-RUN pip install poetry --cache-dir=.pip; \
-    poetry export -f requirements.txt  -o requirements.txt --without-hashes; \
-    pip install -r requirements.txt --cache-dir=.pip ; 
+RUN apt update
+
+# install python
+RUN apt install -y python3 python3-pip
+
 
 CMD ["python", "src/app.py"]
 

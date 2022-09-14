@@ -3,6 +3,7 @@ import os
 import yaml
 import inquirer
 import csv
+import sys
 
 
 class DevopsConfig:
@@ -22,10 +23,28 @@ class DevopsConfig:
         self.digital_ocean_token = digital_ocean_token
         self.config = self.read_config_file()
         self.set_digital_ocean_token()
-        self.install_minikube_if_not_exists()
+        self.install_required_applications()
+        # self.install_minikube_if_not_exists()
+        # install curl if not exists
+        
+
 
     def __str__(self):
         return f"Devops config folder: {self.devops_home}"
+
+    def install_required_applications(self):
+        # update apt
+        if self.check_os() == 'ubuntu' or self.check_os() == 'debian':
+            subprocess.run(['apt', 'update'])
+            subprocess.run(['apt', 'install', 'curl', 'apt-transport-https', 'ca-certificates', 'gnupg-agent', 'software-properties-common', '-y'])
+           # check if nginx exists and install if not
+        if not os.path.exists('/etc/nginx'):
+            subprocess.run(['apt', 'install', 'nginx', '-y'])
+            subprocess.run(['systemctl', 'enable', 'nginx'])
+            subprocess.run(['systemctl', 'start', 'nginx'])
+        else:
+            print("OS not supported")
+            sys.exit(1)
 
     
     def create_directories_if_not_exists(self):
@@ -90,6 +109,8 @@ class DevopsConfig:
         os_check = self.check_os()
         if os_check == 'unknown':
             raise Exception('Unknown OS')
+
+       
 
 
         # if not production use docker else install qemu

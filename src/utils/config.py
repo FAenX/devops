@@ -7,7 +7,7 @@ import sys
 
 
 class DevopsConfig:
-    def __init__(self, production=False, digital_ocean_token=None):
+    def __init__(self, digital_ocean_token=None):
         self.config_file_name = "config.yml"
         self.devops_home = os.path.expanduser("~/.devops")
         self.git = f"{self.devops_home}/git"
@@ -17,35 +17,25 @@ class DevopsConfig:
         self.devops_config_file = f"{self.devops_home}/{self.config_file_name}"
         self.minikube_dir = f"{self.devops_home}/minikube"
         self.docker_registry = "localhost:5000"
-        self.production = production
-        self.create_directories_if_not_exists()
-        self.create_config_file_if_not_exists()
         self.digital_ocean_token = digital_ocean_token
-        self.config = self.read_config_file()
-        self.set_digital_ocean_token()
-        self.install_required_applications()
-        # self.install_minikube_if_not_exists()
-        # install curl if not exists
+        self.minikube_dir = f"{self.devops_home}/minikube"
         
-
 
     def __str__(self):
         return f"Devops config folder: {self.devops_home}"
 
-    def install_required_applications(self):
-        # update apt
-        if self.check_os() == 'ubuntu' or self.check_os() == 'debian':
-            subprocess.run(['apt', 'update'])
-            subprocess.run(['apt', 'install', 'curl', 'apt-transport-https', 'ca-certificates', 'gnupg-agent', 'software-properties-common', '-y'])
-           # check if nginx exists and install if not
-        if not os.path.exists('/etc/nginx'):
-            subprocess.run(['apt', 'install', 'nginx', '-y'])
-            subprocess.run(['systemctl', 'enable', 'nginx'])
-            subprocess.run(['systemctl', 'start', 'nginx'])
+    # inquire and save environment if not set using list of environments
+    def get_environment(self):
+        config = self.read_config_file()
+        if not config.get('environment'):
+            questions = [
+                inquirer.List('environment', message="Choose environment", choices=['local', 'development', 'production']),
+            ]
+            answers = inquirer.prompt(questions)
+            self.update_config_file('environment', answers['environment'])
+            return answers['environment']
         else:
-            print("OS not supported")
-            sys.exit(1)
-
+            return config['environment']
     
     def create_directories_if_not_exists(self):
         os.makedirs(self.devops_home, exist_ok=True)
@@ -53,6 +43,7 @@ class DevopsConfig:
         os.makedirs(self.tmp, exist_ok=True)
         os.makedirs(self.projects, exist_ok=True)
         os.makedirs(self.minikube_dir, exist_ok=True)
+       
 
     def create_config_file_if_not_exists(self):
         if not os.path.exists(self.devops_config_file):
@@ -73,88 +64,20 @@ class DevopsConfig:
             print(documents)
 
     def set_digital_ocean_token(self):
-        print(self.config)
-        if not self.config.get('digital_ocean_token'):
+        config = self.read_config_file()
+        if not config.get('digital_ocean_token'):        
             questions = [
                 inquirer.Text('token', message="Enter your Digital Ocean token")
             ]
             answers = inquirer.prompt(questions)
-            self.config['digital_ocean_token'] = answers['token']
+            self.digital_ocean_token = answers['token']
             self.update_config_file('digital_ocean_token', answers['token'])
-
-    # check os distro
-    def check_os(self):
-        if os.path.isfile('/etc/os-release'):
-            with open('/etc/os-release') as f:
-                reader = csv.reader(f, delimiter="=")
-                os_release = dict(reader)
-                if os_release['ID'] == 'ubuntu':
-                    return 'ubuntu'
-                elif os_release['ID'] == 'debian':
-                    return 'debian'
-                elif os_release.get('ID_LIKE') == 'debian':
-                    return 'debian'
-                else :
-                    return 'unknown'
-        else:
-            return 'unknown'
-            # 
-
-    
-
-
-
-    def install_minikube_if_not_exists(self):     
-
-        os_check = self.check_os()
-        if os_check == 'unknown':
-            raise Exception('Unknown OS')
-
-       
-
-
-        # if not production use docker else install qemu
-        if self.production:
-            # install_qemu()
-            pass
-        else:
-            try:
-                subprocess.check_call('docker -v', shell=True)
-            
-            except:
-                subprocess.check_call('apt-get install docker.io -y', shell=True) 
-                # enablea nd start docker
-                subprocess.check_call('systemctl enable docker', shell=True)
-
-
-        try:
-            subprocess.check_call(f'minikube -h > /dev/null 2>&1', shell=True)
-        except Exception as e:     
-            # print(e)  
-            print('executing minikube install')
-            subprocess.check_call(f'curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube-linux-amd64 && mv minikube-linux-amd64 {self.minikube_dir}/minikube && {self.minikube_dir}/minikube start --force', shell=True, cwd=self.minikube_dir)
-            # add minikube path to bashrc
-            subprocess.check_call(f'echo "export PATH=$PATH:{self.minikube_dir}" >> ~/.bashrc', shell=True)
-            # source bashrc
-            # subprocess.check_call(f'source ~/.bashrc', shell=True)
-            # 
-        try:
-            subprocess.check_call(f'kubectl version --client', shell=True)
-        except:
-            subprocess.check_call(f'curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && chmod +x kubectl && mv kubectl {self.minikube_dir}/', shell=True)
-            # add kubectl to path
-            subprocess.check_call(f'export PATH={self.minikube_dir}:$PATH', shell=True)
-        try:
-            subprocess.check_call('docker-compose -v', shell=True)
-        except:
-            subprocess.check_call('apt-get install docker-compose -y', shell=True)
-
-
-        # add minikube to path if not already there
-        if not os.environ['PATH'].find(self.minikube_dir) > -1:
-            os.environ['PATH'] = os.environ['PATH'] + ':' + self.minikube_dir
-        
-
+   
+    def __call__(self):
+        self.create_directories_if_not_exists()
+        self.create_config_file_if_not_exists()        
+        self.set_digital_ocean_token()
+        self.get_environment()
     
     def __dict__(self):
         return {
@@ -165,8 +88,6 @@ class DevopsConfig:
             "devops_home": self.devops_home,
             "config_file_name": self.config_file_name,
             "projects": self.projects,
-            "minikube_dir": self.minikube_dir,
             "docker_registry": self.docker_registry,
-            "production": self.production
-            
+            "minikube_dir": self.minikube_dir,
         }

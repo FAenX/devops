@@ -3,7 +3,7 @@ services:
   app:
     build: .
     volumes:
-      - .:/code
+      - .:/app
     ports:
       - "5000:5000"
    

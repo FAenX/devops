@@ -2,7 +2,7 @@
 import subprocess
 import inquirer
 from utils.config import DevopsConfig
-
+from utils.install_software import install_all
 
 
 
@@ -11,32 +11,20 @@ if __name__ == '__main__':
     from run_files.applications import minikube_manifest
     from run_files.wordpress import setup_wordpress_in_docker
     from run_files.applications import flask
-    # inqure environment
-    questions = [
-        inquirer.List('environment',
-                    message="Select environment",
-                    choices=['production', 'staging'],
-                    ),
-    ]
-    answers = inquirer.prompt(questions)
-    environment = answers['environment']
+    
 
-    if environment == 'production':
-        production = True
-    else:
-        production = False
-
-    config_instance = DevopsConfig(production=production)
-    print(config_instance.read_config_file())
-    config = config_instance.config
+    # run config
+    config = DevopsConfig()
+    config = config()
 
     print(config)
-    minikube_dir = config.get('minikube_dir')
-    
-    # update debian
-    subprocess.check_call('apt-get update', shell=True)
 
-    print(minikube_dir)
+    install_all()
+
+
+
+
+   
     questions = [
     inquirer.Checkbox('stack', message='Choose stack', choices=['wordpress', 'node', 'react', 'flask','kube-deployment']),    
     ]

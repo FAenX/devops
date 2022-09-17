@@ -31,20 +31,6 @@ def check_user_is_root():
     if os.geteuid() != 0:
         raise Exception('You must be root to run this script')
 
-# install kvm if user is root and environment is production and os is ubuntu or debian
-def install_kvm_if_not_exists():
-    # if kvm already installed do nothing
-    config = read_config_file()
-    if os.path.isfile('/dev/kvm'):
-        return   
-
-    if config['environment'] != 'production':
-        return
-   
-    subprocess.run(['apt-get', 'update'])
-    subprocess.run(['apt-get', 'install', 'qemu-kvm', 'libvirt-daemon-system', 'libvirt-clients', 'bridge-utils', 'virtinst', 'virt-manager', 'libguestfs-tools', '-y'])
-    subprocess.run(['systemctl', 'enable', 'libvirtd'])
-    subprocess.run(['systemctl', 'start', 'libvirtd'])
  
 # install minikube if user is root and os is ubuntu or debian
 def install_minikube_if_not_exists():
@@ -127,7 +113,7 @@ def start_docker_if_not_started():
 def start_minikube():
     config = read_config_file()
     if config['environment'] == 'production' or config['environment'] == 'staging':
-        subprocess.run(['minikube', 'start', '--driver=kvm2', '--force'])
+        subprocess.run(['minikube', 'start', '--driver=none', '--force'])
         # enable minikube addons
     else:
         subprocess.run(['minikube', 'start'])
@@ -176,7 +162,7 @@ def install_all():
         install_nginx_if_not_exists()
         install_kubectl_if_not_exists()
         install_minikube_if_not_exists()
-        install_kvm_if_not_exists()
+        
         start_docker_if_not_started()
         start_minikube()
         setup_nginx_proxy()

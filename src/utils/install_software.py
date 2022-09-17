@@ -127,7 +127,7 @@ def start_docker_if_not_started():
 def start_minikube():
     config = read_config_file()
     if config['environment'] == 'production' or config['environment'] == 'staging':
-        subprocess.run(['minikube', 'start', '--driver=kvm2'])
+        subprocess.run(['minikube', 'start', '--driver=kvm2', '--force'])
         # enable minikube addons
         subprocess.run(['minikube', 'addons', 'enable', 'ingress'])
         subprocess.run(['minikube', 'addons', 'enable', 'metrics-server'])

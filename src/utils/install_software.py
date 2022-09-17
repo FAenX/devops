@@ -129,15 +129,20 @@ def start_minikube():
     if config['environment'] == 'production' or config['environment'] == 'staging':
         subprocess.run(['minikube', 'start', '--driver=kvm2', '--force'])
         # enable minikube addons
-        subprocess.run(['minikube', 'addons', 'enable', 'ingress'])
-        subprocess.run(['minikube', 'addons', 'enable', 'metrics-server'])
-        subprocess.run(['minikube', 'addons', 'enable', 'dashboard'])
-        subprocess.run(['minikube', 'addons', 'enable', 'registry'])
-        subprocess.run(['minikube', 'addons', 'enable', 'storage-provisioner'])
-        subprocess.run(['minikube', 'addons', 'enable', 'default-storageclass'])
-        subprocess.run(['minikube', 'addons', 'enable', 'ingress-dns'])
     else:
         subprocess.run(['minikube', 'start'])
+
+    subprocess.run(['minikube', 'addons', 'enable', 'ingress'])
+    subprocess.run(['minikube', 'addons', 'enable', 'metrics-server'])
+    subprocess.run(['minikube', 'addons', 'enable', 'dashboard'])
+    subprocess.run(['minikube', 'addons', 'enable', 'registry'])
+    subprocess.run(['minikube', 'addons', 'enable', 'storage-provisioner'])
+    subprocess.run(['minikube', 'addons', 'enable', 'default-storageclass'])
+    subprocess.run(['minikube', 'addons', 'enable', 'ingress-dns'])
+
+# minikube ip
+def minikube_ip():
+    return subprocess.check_output(['minikube', 'ip']).decode('utf-8').strip()
 
 # run all install functions
 def install_all():
@@ -151,6 +156,8 @@ def install_all():
         install_kvm_if_not_exists()
         start_docker_if_not_started()
         start_minikube()
+        ip = minikube_ip()
+        print(ip)
     else: 
         raise Exception('Unknown OS')
    

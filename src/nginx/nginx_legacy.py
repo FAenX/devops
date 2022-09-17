@@ -3,10 +3,11 @@ import sys
 import subprocess
 
 import argparse
-from string import Template
+
 
 # nginx confs string templates
-from templates.nginx import nginx_confs
+import nginx_confs
+
 
 
 # parse
@@ -16,13 +17,10 @@ def parseArgs():
     parser = argparse.ArgumentParser(description='generate nginx conf.')
     parser.add_argument("--react", action='store_true', help="react with proxy_pass.")
     parser.add_argument("--svelte", action='store_true', help="svelte with proxy_pass.")
-    parser.add_argument("--docker", action='store_true', help="PROXY server to docker containers.")
     parser.add_argument("--jekyll", action='store_true', help="Jekyll")
     parser.add_argument("--static", action='store_true', help="static files.")
 
     parser.add_argument("servername", help="SERVER_NAME.")
-    parser.add_argument("--proxy", help="proxy_pass proxy to ..")
-    parser.add_argument("--port", help="PORT for app running on local host for PROXY server")
     args = parser.parse_args()
     return args
 
@@ -36,16 +34,11 @@ if __name__ == '__main__':
 
   SITE_NAME=SERVER_NAME.split('.')[0]
 
-  if args.proxy:
-    proxy= args.proxy
-  if args.port:
-    port=args.port
-
   CACHE_DIRECTIVE = nginx_confs.cache_directive.safe_substitute(SITE_NAME=SITE_NAME)
   CACHE = nginx_confs.cache.safe_substitute(SITE_NAME=SITE_NAME)
 
   # create cache directory
-  command = 'sudo mkdir -p /var/nginx/{0}'.format(SITE_NAME)
+  command = 'mkdir -p /var/nginx/{0}'.format(SITE_NAME)
   process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
   process.wait()
 

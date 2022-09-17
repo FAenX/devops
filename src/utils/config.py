@@ -24,6 +24,19 @@ class DevopsConfig:
     def __str__(self):
         return f"Devops config folder: {self.devops_home}"
 
+    # if domain is not set, ask for it and save it to config file
+    def get_domain(self):
+        config = self.read_config_file()
+        if not config.get('domain'):
+            questions = [
+                inquirer.Text('domain', message="Enter domain name")
+            ]
+            answers = inquirer.prompt(questions)
+            self.update_config_file('domain', answers['domain'])
+            return answers['domain']
+        else:
+            return config['domain']
+
     # inquire and save environment if not set using list of environments
     def get_environment(self):
         config = self.read_config_file()
@@ -78,6 +91,7 @@ class DevopsConfig:
         self.create_config_file_if_not_exists()        
         self.set_digital_ocean_token()
         self.get_environment()
+        self.get_domain()
     
     def __dict__(self):
         return {

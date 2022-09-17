@@ -144,6 +144,29 @@ def start_minikube():
 def minikube_ip():
     return subprocess.check_output(['minikube', 'ip']).decode('utf-8').strip()
 
+
+# setup nginx proxy config
+def setup_nginx_proxy():   
+    # create nginx config file
+    config = read_config_file()
+    nginx_config_file = f'''
+    server {{
+        listen 80;
+        server_name {config['domain']};
+        location / {{
+            proxy_pass http://{minikube_ip()};
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }}
+    }}
+    '''
+    with open('/etc/nginx/sites-available/default', 'w') as f:
+        f.write(nginx_config_file)
+    subprocess.run(['systemctl', 'restart', 'nginx'])
+   
+
 # run all install functions
 def install_all():
     if check_os() == 'ubuntu' or check_os() == 'debian':
@@ -156,8 +179,8 @@ def install_all():
         install_kvm_if_not_exists()
         start_docker_if_not_started()
         start_minikube()
-        ip = minikube_ip()
-        print(ip)
+        setup_nginx_proxy()
+        
     else: 
         raise Exception('Unknown OS')
    

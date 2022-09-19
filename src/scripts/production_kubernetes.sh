@@ -14,9 +14,16 @@ echo "Detected IP:  $ip"
 
 {
 hostnamectl set-hostname $ip 
-exec bash
 } || {
-echo "Error: hostnamectl set-hostname"
+echo "Error: hostnamectl set-hostname $ip"
+exit 1
+}
+
+{
+    exec bash
+}||{
+    echo "Error: exec bash"
+    exit 1
 }
 
 {

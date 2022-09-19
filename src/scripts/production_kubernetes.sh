@@ -14,7 +14,7 @@ echo "Detected IP:  $ip"
 
 {
 hostnamectl set-hostname $ip 
-# exec bash
+exec bash
 } || {
 echo "Error: hostnamectl set-hostname"
 }
@@ -118,7 +118,7 @@ curl https://projectcalico.docs.tigera.io/manifests/calico.yaml -O
 kubectl apply -f calico.yaml
 
 }||{
-echo "Error: kubeadm init --control-plane-endpoint='droplet ip'"
+echo "Error: kubeadm init --control-plane-endpoint=$ip"
 echo "exiting"
 exit 1
 }

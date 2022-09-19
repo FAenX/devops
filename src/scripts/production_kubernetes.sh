@@ -69,15 +69,46 @@ exit 1
 
 
 apt update
+{
 apt install -y containerd.io
 containerd config default | sudo tee /etc/containerd/config.toml >/dev/null 2>&1
 systemctl restart containerd
 systemctl enable containerd
+}||{
+echo "Error: apt install -y containerd.io failed"
+echo "exiting"
+exit 1
+}
+
+{
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+}||{
+echo "Error: curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -"
+echo "exiting"
+exit 1
+}
+
 apt update
+
+{
 apt install -y kubelet kubeadm kubectl
 apt-mark hold kubelet kubeadm kubectl
+}||{
+echo "Error: apt install -y kubelet kubeadm kubectl"
+echo "exiting"
+exit 1
+}
+
+{
+
 kubeadm init --control-plane-endpoint='droplet ip'
 curl https://projectcalico.docs.tigera.io/manifests/calico.yaml -O
 kubectl apply -f calico.yaml
+
+}||{
+echo "Error: kubeadm init --control-plane-endpoint='droplet ip'"
+echo "exiting"
+exit 1
+}
+

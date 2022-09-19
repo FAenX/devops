@@ -12,6 +12,8 @@ RUN apt install --no-install-recommends python3.8 python3-pip -y \
 # install poetry
 RUN pip3 install poetry
 
+USER root
+
 
 CMD ["python3", "src/app.py"]
 

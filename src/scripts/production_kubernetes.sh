@@ -1,10 +1,19 @@
 #! /bin/bash
 
 apt update
-apt install curl
+apt install curl -y
+
+ips=$(hostname -I)
+echo $ips
+
+# read ips into an array and pick the first item
+read -ra iparr <<< "$ips"
+ip=${iparr[0]}
+
+echo "Detected IP:  $ip"
 
 {
-hostnamectl set-hostname "127.0.0.1" 
+hostnamectl set-hostname $ip 
 # exec bash
 } || {
 echo "Error: hostnamectl set-hostname"
@@ -48,8 +57,6 @@ echo "Error: tee /etc/sysctl.d/kubernetes.conf"
 }
 
 apt install -y curl gnupg2 software-properties-common apt-transport-https ca-certificates
-
-,
 {
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmour -o /etc/apt/trusted.gpg.d/docker.gpg
 
@@ -82,7 +89,7 @@ exit 1
 }
 
 {
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
 }||{
 echo "Error: curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -"
@@ -103,7 +110,7 @@ exit 1
 
 {
 
-kubeadm init --control-plane-endpoint='127.0.0.1'
+kubeadm init --control-plane-endpoint=$ip 
 export KUBECONFIG=/etc/kubernetes/admin.conf
 
 

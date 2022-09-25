@@ -84,6 +84,11 @@ kubectl apply -f calico.yaml
 # install uwsgi
 apt install -y  uwsgi || (echo "Failed to install uwsgi" && exit 1)
 
+if -f "/etc/systemd/system/flask.service"
+then
+    echo "Flask service already exists"
+else
+    echo "Creating flask service"
 (tee /etc/systemd/system/flask.service <<EOF
 [Unit]
 Description=uWSGI instance to serve flask
@@ -100,6 +105,9 @@ ExecStart=/home/as/flask_app/venv/bin/uwsgi --ini uwsgi.ini
 WantedBy=multi-user.target
 EOF
 ) || (echo "Failed to create flask service" && exit 1)
+fi
+
+    
 
 systemctl start flask
 systemctl enable flask

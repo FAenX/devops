@@ -1,8 +1,11 @@
 #! /bin/bash
 
 apt update
+apt install -y curl gnupg2 software-properties-common apt-transport-https ca-certificates  || echo "Failed to install packages"
 
-(apt install --no-install-recommends python3.8 python3-pip -y \
+(
+add-apt-repository ppa:deadsnakes/ppa \
+apt install --no-install-recommends python3.8 python3-pip -y \
 && ln -s /usr/bin/python3.8 /usr/bin/python \
 && pip3 install poetry) || (echo "Python 3.8 not installed" && exit 1)
 
@@ -45,10 +48,6 @@ net.ipv4.ip_forward = 1
 EOF
 
 sysctl --system
-
-
-
-apt install -y curl gnupg2 software-properties-common apt-transport-https ca-certificates  || echo "Failed to install packages"
 
 (curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmour -o /etc/apt/trusted.gpg.d/docker.gpg) \
 && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \

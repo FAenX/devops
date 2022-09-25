@@ -12,6 +12,11 @@ RUN apt install --no-install-recommends python3.8 python3-pip -y \
 # install poetry
 RUN pip3 install poetry
 
+# add user and add them to sudoers
+RUN useradd -ms /bin/bash user \
+    && echo "user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# USER user
 USER root
 
 

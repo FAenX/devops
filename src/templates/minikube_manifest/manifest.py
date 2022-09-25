@@ -3,7 +3,7 @@ from utils.config_object import config_object
 import subprocess
 
 
-class MiniKubeManifest:
+class KubeManifest:
     def __init__(self, project_name):
         self.project_name = project_name
         self.config = config_object()

@@ -269,6 +269,26 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
+name = "uwsgi"
+version = "2.0.20"
+description = "The uWSGI server"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "waitress"
+version = "2.1.2"
+description = "Waitress WSGI server"
+category = "main"
+optional = false
+python-versions = ">=3.7.0"
+
+[package.extras]
+docs = ["Sphinx (>=1.8.1)", "docutils", "pylons-sphinx-themes (>=1.0.9)"]
+testing = ["pytest", "pytest-cover", "coverage (>=5.0)"]
+
+[[package]]
 name = "wcwidth"
 version = "0.2.5"
 description = "Measures the displayed width of unicode strings in a terminal"
@@ -305,7 +325,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "217eee03013f34a6a249eb6d92de3b0d41948a0ca95ef835b6d846957c1c23c0"
+content-hash = "9f97facc4bfbaef06e6f037e2197ebb1f17add875beff9a227aa6b3520086445"
 
 [metadata.files]
 ansicon = []
@@ -332,6 +352,8 @@ pyyaml = []
 readchar = []
 six = []
 tomli = []
+uwsgi = []
+waitress = []
 wcwidth = []
 werkzeug = []
 zipp = []

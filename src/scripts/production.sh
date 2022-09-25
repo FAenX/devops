@@ -54,7 +54,7 @@ apt update
 (apt install -y containerd.io \
 && containerd config default | sudo tee /etc/containerd/config.toml >/dev/null 2>&1 \
 && systemctl restart containerd \
-&& systemctl enable containerd) || echo "Failed to install containerd" && exit 1
+&& systemctl enable containerd) || (echo "Failed to install containerd" && exit 1)
 
 
 

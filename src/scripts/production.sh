@@ -2,6 +2,11 @@
 
 apt update
 
+(apt install --no-install-recommends python3.8 python3-pip -y \
+&& ln -s /usr/bin/python3.8 /usr/bin/python \
+&& pip3 install poetry) || (echo "Python 3.8 not installed" && exit 1)
+
+
 # install and start nginx
 apt install -y nginx || echo "Failed to install nginx"
 systemctl start nginx || echo "Failed to start nginx"

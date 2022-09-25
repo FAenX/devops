@@ -3,8 +3,7 @@
 apt update
 apt install -y curl gnupg2 software-properties-common apt-transport-https ca-certificates  || echo "Failed to install packages"
 
-(
-add-apt-repository ppa:deadsnakes/ppa \
+(add-apt-repository ppa:deadsnakes/ppa \
 apt install python3.8 python3-pip -y \
 && ln -s /usr/bin/python3.8 /usr/bin/python \
 && pip3 install poetry) || (echo "Python 3.8 not installed" && exit 1)
@@ -56,7 +55,7 @@ sysctl --system
 apt update
 
 (apt install -y containerd.io \
-&& containerd config default | sudo tee /etc/containerd/config.toml >/dev/null 2>&1 \
+&& containerd config default | tee /etc/containerd/config.toml >/dev/null 2>&1 \
 && systemctl restart containerd \
 && systemctl enable containerd) || (echo "Failed to install containerd" && exit 1)
 

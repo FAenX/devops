@@ -82,7 +82,7 @@ kubectl apply -f calico.yaml
 # install uwsgi
 apt install -y  uwsgi || (echo "Failed to install uwsgi" && exit 1)
 
-if -f "/etc/systemd/system/flask.service"
+if -f "/etc/systemd/system/devops.service"
 then
     echo "Flask service already exists"
 else
@@ -93,11 +93,11 @@ Description=uWSGI instance to serve flask
 After=network.target
 
 [Service]
-User=as
+User=root
 Group=www-data
-WorkingDirectory=/home/as/flask_app
-Environment="PATH=/home/as/flask_app/env/bin"
-ExecStart=/home/as/flask_app/venv/bin/uwsgi --ini uwsgi.ini
+WorkingDirectory=/home/root/devops
+Environment="PATH=/home/root/devops/.venv/bin"
+ExecStart=/home/root/devops/.venv/bin/uwsgi --ini uwsgi.ini
 
 [Install]
 WantedBy=multi-user.target

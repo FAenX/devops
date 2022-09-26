@@ -1,4 +1,4 @@
-from nginx.nginx_to_socket_stream_config import setup_nginx_proxy_to_stream
+from nginx_to_socket_stream_config import setup_nginx_proxy_to_stream
 
 def nginx_to_socket_stream__config():
     site_name_or_ip = input("Enter site name or IP: ")

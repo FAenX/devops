@@ -60,6 +60,26 @@ server{
 }
 ''')
 
+# nginx proxy pass to a socket configuration
+socket_proxy = Template('''
+# server
+server{
+    # SSL Configuration
+    server_name $SERVER_NAME;
+    client_max_body_size 50M;
+     access_log  /var/log/nginx/$SERVER_NAME.access.log;
+    error_log   /var/log/nginx/$SERVER_NAME.error.log;
+
+    location / {
+        include uwsgi_params;
+        uwsgi_pass unix:/$ROOT_DIR/$SOCKET;
+        uwsgi_buffering off;  # <-- this line is new
+        
+    }
+}
+''')
+
+
 
 dir_react=Template('''/srv/www/$SITE_NAME/build/''')
 dir_jekyll=Template('''/srv/www/$SITE_NAME/_site/''')

@@ -55,7 +55,7 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmour -o /etc
 ||  exit 1
 
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
-apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main" \
+&& apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main" \
 ||  exit 1
 
 

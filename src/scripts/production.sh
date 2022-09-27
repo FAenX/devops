@@ -16,17 +16,17 @@ systemctl start nginx || echo "Failed to start nginx"
 # enable nginx
 systemctl enable nginx || echo "Failed to enable nginx"
 
-ips=$(hostname -I)
-echo $ips
+# ips=$(hostname -I)
+# echo $ips
 
-# read ips into an array and pick the first item
-read -ra iparr <<< "$ips"
+# # read ips into an array and pick the first item
+# read -ra iparr <<< "$ips"
 
-echo "Detected IP:  ${iparr[0]} "
+# echo "Detected IP:  ${iparr[0]} "
 
-# try to set hostname to ip address catch error if it fails log and continue
-echo "setting hostname to ${iparr[0]}"
-hostnamectl set-hostname ${iparr[0]} || echo "Failed to set hostname to IP"
+# # try to set hostname to ip address catch error if it fails log and continue
+# echo "setting hostname to ${iparr[0]}"
+# hostnamectl set-hostname ${iparr[0]} || echo "Failed to set hostname to IP"
 
 # disable swap
 echo "Disabling swap"

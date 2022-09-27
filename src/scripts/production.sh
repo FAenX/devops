@@ -2,7 +2,7 @@
 
 apt update
 apt install python3-pip -y \
-|| echo "Failed to install python3 and python3-pip" && exit 1
+|| echo "Failed to install python3 and python3-pip" 
 
 pip3 install poetry \
 && poetry config virtualenvs.in-project true || echo "Failed to install poetry"

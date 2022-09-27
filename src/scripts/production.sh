@@ -49,22 +49,22 @@ EOF
 
 sysctl --system
 
-(curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmour -o /etc/apt/trusted.gpg.d/docker.gpg) \
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmour -o /etc/apt/trusted.gpg.d/docker.gpg \
 && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
-|| (echo "Failed to add docker repo" && exit 1)
+|| echo "Failed to add docker repo" && exit 1
 
 apt update
 
-(apt install -y containerd.io \
+apt install -y containerd.io containerd docker.io
 && containerd config default | tee /etc/containerd/config.toml >/dev/null 2>&1 \
 && systemctl restart containerd \
-&& systemctl enable containerd) || (echo "Failed to install containerd" && exit 1)
+&& systemctl enable containerd || echo "Failed to install containerd" && exit 1
 
 
 
-(curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
-) || (echo "Failed to add kubernetes repo" && exit 1)
+|| echo "Failed to add kubernetes repo" && exit 1
 
 
 apt update

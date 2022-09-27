@@ -7,7 +7,7 @@ def nginx_to_socket_stream__config():
     root_dir = input('root dir: ')
 
     setup_nginx_proxy_to_stream(site_name_or_ip, site_name, root_dir)
-    setup_uwsgi_socket(root_dir)
+    setup_uwsgi_socket(site_name, root_dir)
 
 if __name__ == '__main__':
     nginx_to_socket_stream__config()

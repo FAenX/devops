@@ -8,8 +8,8 @@ def  setup_nginx_proxy_to_stream(SERVER_NAME_OR_IP, SITE_NAME, ROOT_DIR, SOCKET)
         listen 80;
         server_name {SERVER_NAME_OR_IP};
         client_max_body_size 50M;
-        access_log  /var/log/nginx/$SERVER_NAME.access.log;
-        error_log   /var/log/nginx/$SERVER_NAME.error.log;
+        access_log  /var/log/nginx/{SERVER_NAME_OR_IP}.access.log;
+        error_log   /var/log/nginx/{SERVER_NAME_OR_IP}.error.log;
         location / {{
             include uwsgi_params;
             uwsgi_pass unix:/{ROOT_DIR}/{SOCKET};
@@ -23,4 +23,6 @@ def  setup_nginx_proxy_to_stream(SERVER_NAME_OR_IP, SITE_NAME, ROOT_DIR, SOCKET)
 
     subprocess.run(['nginx', '-t'])
     subprocess.run(['systemctl', 'reload', 'nginx'])
+
+    
 

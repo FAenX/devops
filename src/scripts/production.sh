@@ -1,6 +1,12 @@
 #! /bin/bash
 
 apt update
+apt python3-pip \
+|| echo "Failed to install python3 and python3-pip" && exit 1
+
+pip3 install poetry \
+&& poetry config virtualenvs.in-project true || echo "Failed to install poetry"
+
 apt install -y curl gnupg2 software-properties-common apt-transport-https ca-certificates  || echo "Failed to install packages"
 
 (add-apt-repository ppa:deadsnakes/ppa \
@@ -82,33 +88,7 @@ kubectl apply -f calico.yaml
 # install uwsgi
 apt install -y  uwsgi || (echo "Failed to install uwsgi" && exit 1)
 
-if -f "/etc/systemd/system/devops.service"
-then
-    echo "Flask service already exists"
-else
-    echo "Creating flask service"
-(tee /etc/systemd/system/flask.service <<EOF
-[Unit]
-Description=uWSGI instance to serve flask
-After=network.target
 
-[Service]
-User=root
-Group=www-data
-WorkingDirectory=/home/root/devops
-Environment="PATH=/home/root/devops/.venv/bin"
-ExecStart=/home/root/devops/.venv/bin/uwsgi --ini uwsgi.ini
-
-[Install]
-WantedBy=multi-user.target
-EOF
-) || (echo "Failed to create flask service" && exit 1)
-fi
-
-    
-
-systemctl start flask
-systemctl enable flask
 
 
 

@@ -16,6 +16,10 @@ RUN pip3 install poetry
 RUN useradd -ms /bin/bash user \
     && echo "user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
+# install dependencies
+RUN poetry config virtualenvs.in-project true \
+    && poetry install
+
 # USER user
 USER root
 

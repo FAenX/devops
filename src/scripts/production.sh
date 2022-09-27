@@ -51,8 +51,11 @@ sysctl --system
 
 apt install -y containerd containerd.io  docker.io \
 && containerd config default | tee /etc/containerd/config.toml >/dev/null 2>&1 \
-&& systemctl restart containerd \
-&& systemctl enable containerd || echo "Failed to install containerd" 
+&& systemctl start containerd \
+&& systemctl enable containerd \
+&& systemctl start docker \
+&& systemctl enable docker \
+|| echo "Failed to install containerd" 
 
 
 apt update

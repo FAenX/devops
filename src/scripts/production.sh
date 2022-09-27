@@ -1,7 +1,7 @@
 #! /bin/bash
 
 apt update
-apt python3-pip \
+apt install python3-pip \
 || echo "Failed to install python3 and python3-pip" && exit 1
 
 pip3 install poetry \

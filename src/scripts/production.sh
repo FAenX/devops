@@ -49,7 +49,7 @@ EOF
 
 sysctl --system
 
-apt install -y containerd.io containerd docker.io \
+apt install -y containerd containerd.io  docker.io \
 && containerd config default | tee /etc/containerd/config.toml >/dev/null 2>&1 \
 && systemctl restart containerd \
 && systemctl enable containerd || echo "Failed to install containerd" 

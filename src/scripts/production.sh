@@ -49,6 +49,11 @@ EOF
 
 sysctl --system
 
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmour -o /etc/apt/trusted.gpg.d/docker.gpg \
+&& add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
+||  exit 1
+
 apt install -y containerd containerd.io  docker.io \
 && containerd config default | tee /etc/containerd/config.toml >/dev/null 2>&1 \
 && systemctl start containerd \

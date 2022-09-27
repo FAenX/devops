@@ -24,9 +24,9 @@ systemctl enable nginx || echo "Failed to enable nginx"
 
 # echo "Detected IP:  ${iparr[0]} "
 
-# # try to set hostname to ip address catch error if it fails log and continue
-# echo "setting hostname to ${iparr[0]}"
-# hostnamectl set-hostname ${iparr[0]} || echo "Failed to set hostname to IP"
+# try to set hostname to ip address catch error if it fails log and continue
+echo "setting hostname to kube-master"
+hostnamectl set-hostname 'kube-master' || echo "Failed to set hostname to IP"
 
 # disable swap
 echo "Disabling swap"

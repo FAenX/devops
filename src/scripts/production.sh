@@ -1,18 +1,13 @@
 #! /bin/bash
 
 apt update
-apt install python3-pip \
+apt install python3-pip -y \
 || echo "Failed to install python3 and python3-pip" && exit 1
 
 pip3 install poetry \
 && poetry config virtualenvs.in-project true || echo "Failed to install poetry"
 
 apt install -y curl gnupg2 software-properties-common apt-transport-https ca-certificates  || echo "Failed to install packages"
-
-(add-apt-repository ppa:deadsnakes/ppa \
-apt install python3.8 python3-pip -y \
-&& ln -s /usr/bin/python3.8 /usr/bin/python \
-&& pip3 install poetry || echo "Python 3.8 not installed" && exit 1)
 
 
 # install and start nginx

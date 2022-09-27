@@ -73,7 +73,7 @@ apt update
 apt install -y kubelet kubeadm kubectl
 apt-mark hold kubelet kubeadm kubectl
 
-kubeadm init --control-plane-endpoint=$ip  || echo "Error: failed to init kubeadm"
+kubeadm init --control-plane-endpoint='kube-master'  || echo "Error: failed to init kubeadm"
 export KUBECONFIG=/etc/kubernetes/admin.conf
 
 

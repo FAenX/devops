@@ -1,7 +1,7 @@
 import subprocess
 
 
-def  setup_nginx_proxy_to_stream(SERVER_NAME_OR_IP, SITE_NAME, ROOT_DIR, SOCKET):
+def  setup_nginx_proxy_to_stream(SERVER_NAME_OR_IP, SITE_NAME, ROOT_DIR):
     "create and nginx configuration"
     config = f'''
     server {{
@@ -12,7 +12,7 @@ def  setup_nginx_proxy_to_stream(SERVER_NAME_OR_IP, SITE_NAME, ROOT_DIR, SOCKET)
         error_log   /var/log/nginx/{SERVER_NAME_OR_IP}.error.log;
         location / {{
             include uwsgi_params;
-            uwsgi_pass unix:/{ROOT_DIR}/{SOCKET};
+            uwsgi_pass unix:/{ROOT_DIR}/{SITE_NAME}.sock;
         }}
     }}'''
 

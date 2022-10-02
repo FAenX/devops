@@ -1,17 +1,16 @@
 import subprocess
 
 
-def  setup_nginx_proxy_to_stream(server, site_name, root_dir):
+def setup_nginx_to_localhost(site_name, server, proxy_pass):
     "create and nginx configuration"
     config = f'''
     server {{
         server_name {server};
         client_max_body_size 50M;
-        access_log  /var/log/nginx/{server}.access.log;
-        error_log   /var/log/nginx/{server}.error.log;
+        access_log  /var/log/nginx/{site_name}.access.log;
+        error_log   /var/log/nginx/{site_name}.error.log;
         location / {{
-            include uwsgi_params;
-            uwsgi_pass unix:/{root_dir}/{site_name}.sock;
+            proxy_pass {proxy_pass};
         }}
     }}'''
 
@@ -22,6 +21,3 @@ def  setup_nginx_proxy_to_stream(server, site_name, root_dir):
 
     subprocess.run(['nginx', '-t'])
     subprocess.run(['systemctl', 'reload', 'nginx'])
-
-    
-

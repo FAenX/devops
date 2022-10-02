@@ -1,10 +1,12 @@
+from distutils.command.config import config
 import subprocess
 import os
 import yaml
 import inquirer
 import csv
 import sys
-
+from .inquirer_wrapper import get_input, checbox
+import logging
 
 class DevopsConfig:
     def __init__(self, digital_ocean_token=None):
@@ -85,6 +87,24 @@ class DevopsConfig:
             answers = inquirer.prompt(questions)
             self.digital_ocean_token = answers['token']
             self.update_config_file('digital_ocean_token', answers['token'])
+    
+    def software_dependencies(self):
+        config = self.read_config_file()
+        answers = {'software_dependencies': []}
+        if not config.get('software_dependencies'):
+            answers = checbox(options=['nginx'], message='Choose software dependencies', name='software_dependencies')
+            print(answers)
+
+            # check if nginx is already installed and if not install it
+        if 'nginx' in answers['software_dependencies']:
+            try:
+                subprocess.check_call(['nginx', '-v'])
+            except:
+                subprocess.check_call(['apt', 'install', 'nginx', '-y'])                 
+
+            self.update_config_file('software_dependencies', answers)
+            
+
    
     def __call__(self):
         self.create_directories_if_not_exists()
@@ -92,6 +112,7 @@ class DevopsConfig:
         self.set_digital_ocean_token()
         self.get_environment()
         self.get_domain()
+        self.software_dependencies()
     
     def __dict__(self):
         return {

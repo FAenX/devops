@@ -92,7 +92,7 @@ class DevopsConfig:
         config = self.read_config_file()
         answers = {'software_dependencies': []}
         if not config.get('software_dependencies'):
-            answers = checbox(options=['nginx'], message='Choose software dependencies', name='software_dependencies')
+            answers = checbox(options=['nginx', 'uwsgi'], message='Choose software dependencies', name='software_dependencies')
             print(answers)
 
             # check if nginx is already installed and if not install it
@@ -103,6 +103,15 @@ class DevopsConfig:
                 subprocess.check_call(['apt', 'install', 'nginx', '-y'])                 
 
             self.update_config_file('software_dependencies', answers)
+
+        if 'uwsgi' in answers['software_dependencies']:
+            try:
+                subprocess.check_call(['uwsgi', '--version'])
+            except:
+                subprocess.check_call(['apt', 'install', 'uwsgi', '-y'])                 
+
+            self.update_config_file('software_dependencies', answers)
+
             
 
    

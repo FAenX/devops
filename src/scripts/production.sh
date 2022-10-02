@@ -1,7 +1,7 @@
 #! /bin/bash
 
 apt update
-apt install python3-pip -y \
+apt install python3-pip python3-dev build-essential  -y \
 || echo "Failed to install python3 and python3-pip" 
 
 pip3 install poetry \
@@ -81,7 +81,6 @@ curl https://projectcalico.docs.tigera.io/manifests/calico.yaml -O
 kubectl apply -f calico.yaml
 
 # install uwsgi
-apt install -y  uwsgi || (echo "Failed to install uwsgi" && exit 1)
 
 
 

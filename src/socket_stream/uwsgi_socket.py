@@ -11,7 +11,6 @@ def setup_uwsgi_socket(site_name, root_dir):
     
     [Service]
     User=www-data
-    Group=www-data
     WorkingDirectory={root_dir}
     Environment="PATH={root_dir}/.venv/bin"
     ExecStart={root_dir}/.venv/bin/uwsgi --ini {root_dir}/uwsgi.ini

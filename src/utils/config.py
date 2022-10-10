@@ -121,7 +121,7 @@ class DevopsConfig:
         self.set_digital_ocean_token()
         self.get_environment()
         self.get_domain()
-        self.software_dependencies()
+        # self.software_dependencies()
     
     def __dict__(self):
         return {

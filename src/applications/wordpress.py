@@ -22,3 +22,4 @@ def setup_wordpress_in_docker():
 
     wp_project.create_docker_compose_file()
     wp_project.start()
+

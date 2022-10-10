@@ -9,9 +9,8 @@ from utils.config_object import config_object
 
 
 
-def minikube_manifest():
+def minikube_manifest(project_name):
     config = config_object()
-    project_name = input('Enter project name: ')
     git_dir_path = f"{config['git']}/{project_name}.git"
     project_path = f"{config['projects']}/{project_name}"
     minikube_dir = f"{config['minikube_dir']}"
@@ -44,9 +43,7 @@ def minikube_manifest():
     
 
 
-def flask():   
-    project_name = input('Enter project name: ')
-    port = input('Enter port: ')
+def flask(project_name, port):   
     config_path =  DevopsConfig().devops_config_file
     yaml_content = open(f'{config_path}', 'r')
     yaml_content = yaml.load(yaml_content, Loader=yaml.FullLoader)
@@ -74,6 +71,10 @@ def flask():
 
     flask_project = FlaskProject(project_name, port)
     flask_project.write_docker_compose_file()
+
+
+
+    
 
 
 

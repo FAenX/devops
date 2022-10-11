@@ -4,7 +4,7 @@ import subprocess
 import inquirer
 from utils.config import DevopsConfig
 from utils.inquirer_wrapper import get_input, checbox
-from nginx.nginx import NginXOptions, nginx_to_localhost_and_port, nginx_to_socket_stream_config
+from src.nginx.nginx_cmd import NginXOptions, nginx_to_localhost_and_port, nginx_to_socket_stream_config
 import logging
 from socket_stream.socket_stream import uwsgi_socket_stream
 

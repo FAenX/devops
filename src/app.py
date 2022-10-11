@@ -3,6 +3,7 @@ from flask import Flask, request
 from flask_cors import CORS
 from deploy_react_app import deploy_react_app
 from utils.config import DevopsConfig
+from database.database_queries import Database
 
 # for now, we will use a global variable to store the data
 config = DevopsConfig()
@@ -30,6 +31,13 @@ def deploy():
         return results
 
     return 'Not implemented'
+
+@app.route("/projects", methods=["GET"])
+def get_projects():
+    database = Database(connector='sqlserver')
+    results = database.execute_query('select top 5 * from projects order by 1 desc')
+    return results
+
 
 
 if __name__ == "__main__":

@@ -1,20 +1,20 @@
 from git.react_post_receive import create_react_post_receive
-from database.database_queries import insert_into_database
+from database.database_queries import Database
+import pymssql
 
 
 def deploy_react_app(project_name):
-    git_repo = create_react_post_receive(project_name)
+    local_git_repo = create_react_post_receive(project_name)
+    database = Database(connector='sqlserver')
+    stored_procedure = 'sp_insert_project'
 
-    # insert into postgres database
-    # insert into postgres database
-    table = 'devops.projects'
-    columns = ['project_name', 'internal_git_repo']
-    values = [f'\'{project_name}\'', f'\'{git_repo}\'']
-    results = insert_into_database(table, columns, values)
-
+    results = database.execute_store_procedure(stored_procedure, (project_name, local_git_repo,  pymssql.output(str)))
+    print(results)
 
 
     return results
+
+
 
 
     
